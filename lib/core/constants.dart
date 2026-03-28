@@ -1,5 +1,14 @@
 class AppConstants {
-  static const List<String> navLinks = ['Home', 'Services', 'Gallery', 'About'];
+  static const String phoneNum = '+233555207062';
+  static const String gmail = 'beautybymoblack@gmail.com';
+
+  static const List<String> navLinks = [
+    'Home',
+    'Services',
+    'Products',
+    'Gallery',
+    'About',
+  ];
 
   static const List<Map<String, dynamic>> services = [
     //Braiding

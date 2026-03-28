@@ -156,8 +156,8 @@ class _HeroSectionState extends State<HeroSection> {
         ),
         const SizedBox(height: 32),
         Text(
-          "Step into a world of refined elegance and bespoke artistry at MOBLACK."
-          " We don’t just style hair; we curate your signature look.",
+          "Step into a world of refined elegance and bespoke artistry at Beauty By Moblack."
+          "\nWe don’t just style hair; we curate your signature look.",
           textAlign: widget.isDesktop ? TextAlign.left : TextAlign.center,
           style: TextStyle(
             color: AppTheme.textWhite,

@@ -17,6 +17,13 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   bool isMenuOpen = false;
+  ScrollController scrollController = ScrollController();
+
+  @override
+  void dispose() {
+    scrollController.dispose();
+    super.dispose();
+  }
 
   void toggleMenu() {
     setState(() {
@@ -33,6 +40,7 @@ class _HomePageState extends State<HomePage> {
       body: Stack(
         children: [
           SingleChildScrollView(
+            controller: scrollController,
             child: Column(
               children: [
                 HeroSection(isDesktop: isDesktop),

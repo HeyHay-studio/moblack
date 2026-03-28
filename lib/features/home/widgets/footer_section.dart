@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:moblack/core/constants.dart';
 import 'package:moblack/features/widgets/fav_icon.dart';
 
 import '../../../../core/theme.dart';
+import '../../services/communication_service.dart';
 
 class FooterSection extends StatelessWidget {
   final bool isDesktop;
@@ -42,6 +44,7 @@ class FooterSection extends StatelessWidget {
           const SizedBox(height: 40),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            mainAxisSize: MainAxisSize.max,
             children: [
               const Text(
                 '© 2026 MOBLACK. ALL RIGHTS RESERVED.',
@@ -101,11 +104,28 @@ class FooterSection extends StatelessWidget {
         const SizedBox(height: 24),
         Row(
           children: [
-            FavIcon(icon: FontAwesomeIcons.instagram),
+            FavIcon(
+              icon: FontAwesomeIcons.instagram,
+              onTap: () => CommunicationService.launchInstagram('moblack'),
+            ),
             const SizedBox(width: 16),
-            FavIcon(icon: FontAwesomeIcons.xTwitter),
+            FavIcon(
+              icon: FontAwesomeIcons.xTwitter,
+              onTap: () => CommunicationService.launchX('moblack'),
+            ),
             const SizedBox(width: 16),
-            FavIcon(icon: FontAwesomeIcons.tiktok),
+            FavIcon(
+              icon: FontAwesomeIcons.tiktok,
+              onTap: () => CommunicationService.launchTikTok('moblack'),
+            ),
+            const SizedBox(width: 16),
+            FavIcon(
+              icon: FontAwesomeIcons.whatsapp,
+              onTap: () => CommunicationService.launchWhatsApp(
+                phoneNumber: AppConstants.phoneNum,
+                message: 'Hello!',
+              ),
+            ),
           ],
         ),
       ],
@@ -121,24 +141,24 @@ class FooterSection extends StatelessWidget {
           style: GoogleFonts.playfairDisplay(color: Colors.white, fontSize: 20),
         ),
         const SizedBox(height: 24),
-        const Row(
+        Row(
           children: [
             Icon(Icons.phone, color: AppTheme.primaryPink, size: 16),
             SizedBox(width: 12),
             Text(
-              '(+233)55 520-7062',
-              style: TextStyle(color: Colors.white54, fontSize: 14),
+              AppConstants.phoneNum,
+              style: GoogleFonts.lato(color: Colors.white54, fontSize: 14),
             ),
           ],
         ),
         const SizedBox(height: 16),
-        const Row(
+        Row(
           children: [
             Icon(Icons.mail, color: AppTheme.primaryPink, size: 16),
             SizedBox(width: 12),
             Text(
-              'moblack@gmail.com',
-              style: TextStyle(color: Colors.white54, fontSize: 14),
+              AppConstants.gmail,
+              style: GoogleFonts.lato(color: Colors.white54, fontSize: 14),
             ),
           ],
         ),
@@ -155,17 +175,25 @@ class FooterSection extends StatelessWidget {
           style: GoogleFonts.playfairDisplay(color: Colors.white, fontSize: 20),
         ),
         const SizedBox(height: 24),
-        const Row(
+        Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Icon(Icons.location_on, color: AppTheme.primaryPink, size: 16),
-            SizedBox(width: 12),
-            Text(
-              "Lebanon Police Junction Bus Stop.\nE1282 Tetteh Anang Rd, Tema",
-              style: TextStyle(
-                color: Colors.white54,
-                fontSize: 14,
-                height: 1.5,
+            const Icon(
+              Icons.location_on,
+              color: AppTheme.primaryPink,
+              size: 16,
+            ),
+            const SizedBox(width: 12),
+            Expanded(
+              child: Text(
+                "Ashaiman Lebanon Police Junction Bus Stop."
+                "\nNear Elis School Junction."
+                "\nE1282 Tetteh Anang Rd, Tema",
+                style: GoogleFonts.lato(
+                  color: Colors.white54,
+                  fontSize: 14,
+                  height: 1.5,
+                ),
               ),
             ),
           ],

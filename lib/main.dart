@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+
 import 'core/theme.dart';
 import 'features/home/home_page.dart';
 
@@ -13,7 +14,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Moblack',
+      title: 'Beauty By Moblack',
       debugShowCheckedModeBanner: false,
       theme: AppTheme.darkTheme,
       home: const HomePage(),

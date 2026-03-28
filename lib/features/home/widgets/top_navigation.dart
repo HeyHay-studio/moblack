@@ -31,27 +31,39 @@ class TopNavigation extends StatelessWidget {
           child: Container(
             color: Colors.transparent,
             padding: EdgeInsets.symmetric(
-              horizontal: isDesktop ? 48 : 24,
+              horizontal: isDesktop ? 30 : 16,
               vertical: 20,
             ),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                // LOGO
-                Text(
-                  'MOBLACK',
-                  style: GoogleFonts.playfairDisplay(
-                    color: Colors.white,
-                    fontSize: 24,
-                    fontWeight: FontWeight.bold,
-                    letterSpacing: 2,
-                  ),
+                Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Container(
+                      height: isDesktop ? 40 : 30,
+                      width: isDesktop ? 40 : 30,
+                      decoration: const BoxDecoration(
+                        image: DecorationImage(
+                          fit: BoxFit.contain, // contain is better for logos so they don't get cropped
+                          image: AssetImage("assets/images/logo_removed.png"),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(width: 12), // Add visual space between the logo and text
+                    Text(
+                      'Beauty By Moblack',
+                      style: GoogleFonts.playfairDisplay(
+                        color: Colors.white,
+                        fontSize: isDesktop ? 24 : 18, // scaled down slightly for mobile to prevent overflow
+                        fontWeight: FontWeight.bold,
+                        letterSpacing: 2,
+                      ),
+                    ),
+                  ],
                 ),
 
-                // DESKTOP NAV LINKS
                 if (isDesktop) _buildDesktopNav(),
-
-                // ACTIONS (Button or Mobile Menu)
                 _buildActionArea(),
               ],
             ),
@@ -112,8 +124,21 @@ class TopNavigation extends StatelessWidget {
     // MOBILE MENU ICON
     return IconButton(
       onPressed: onMenuToggle,
+      hoverColor: Colors.white10,
+      splashRadius: 28,
       icon: AnimatedSwitcher(
-        duration: const Duration(milliseconds: 300),
+        duration: const Duration(milliseconds: 800),
+        switchInCurve: Curves.easeOutBack,
+        switchOutCurve: Curves.easeInBack,
+        transitionBuilder: (Widget child, Animation<double> animation) {
+          return RotationTransition(
+            turns: Tween<double>(begin: 0.1, end: 1.0).animate(animation),
+            child: ScaleTransition(
+              scale: animation,
+              child: FadeTransition(opacity: animation, child: child),
+            ),
+          );
+        },
         child: Icon(
           isMenuOpen ? Icons.close : Icons.menu,
           key: ValueKey<bool>(isMenuOpen),
