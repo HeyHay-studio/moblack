@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -37,13 +39,17 @@ class _ServicesPageState extends State<ServicesPage>
 
     // Stagger algorithm
     final double startDelay = (index * 0.1).clamp(0.0, 0.7);
-    final Animation<double> slideAnim =
-        Tween<double>(begin: 80, end: 0).animate(
-      CurvedAnimation(
-        parent: _controller,
-        curve: Interval(startDelay, startDelay + 0.3, curve: Curves.easeOutCirc),
-      ),
-    );
+    final Animation<double> slideAnim = Tween<double>(begin: 80, end: 0)
+        .animate(
+          CurvedAnimation(
+            parent: _controller,
+            curve: Interval(
+              startDelay,
+              startDelay + 0.3,
+              curve: Curves.easeOutCirc,
+            ),
+          ),
+        );
     final Animation<double> fadeAnim = Tween<double>(begin: 0, end: 1).animate(
       CurvedAnimation(
         parent: _controller,
@@ -56,17 +62,19 @@ class _ServicesPageState extends State<ServicesPage>
       builder: (context, child) {
         return Transform.translate(
           offset: Offset(0, slideAnim.value),
-          child: Opacity(
-            opacity: fadeAnim.value,
-            child: child,
-          ),
+          child: Opacity(opacity: fadeAnim.value, child: child),
         );
       },
       child: ServiceCard(serviceData: service),
     );
   }
 
-  Widget _buildBenefitCard(String title, String desc, IconData icon, int index) {
+  Widget _buildBenefitCard(
+    String title,
+    String desc,
+    IconData icon,
+    int index,
+  ) {
     return Container(
       padding: const EdgeInsets.all(24),
       decoration: BoxDecoration(
@@ -77,7 +85,7 @@ class _ServicesPageState extends State<ServicesPage>
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Icon(icon, color: AppTheme.primaryPink, size: 32),
+          Icon(icon, color: AppTheme.primaryGold, size: 32),
           const SizedBox(height: 16),
           Text(
             title,
@@ -88,10 +96,7 @@ class _ServicesPageState extends State<ServicesPage>
             ),
           ),
           const SizedBox(height: 8),
-          Text(
-            desc,
-            style: const TextStyle(color: Colors.grey, fontSize: 14),
-          ),
+          Text(desc, style: const TextStyle(color: Colors.grey, fontSize: 14)),
         ],
       ),
     );
@@ -102,7 +107,14 @@ class _ServicesPageState extends State<ServicesPage>
       padding: const EdgeInsets.all(24),
       width: 300,
       decoration: BoxDecoration(
-        color: Colors.white.withAlpha(5),
+        gradient: LinearGradient(
+          colors: [
+            AppTheme.primaryGold.withAlpha(180),
+            Colors.white.withAlpha(200),
+          ],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+        ),
         borderRadius: BorderRadius.circular(24),
         border: Border.all(color: Colors.white12),
       ),
@@ -112,7 +124,9 @@ class _ServicesPageState extends State<ServicesPage>
           Row(
             children: List.generate(5, (i) {
               return Icon(
-                i < (feedback['rating'] as int) ? Icons.star : Icons.star_border,
+                i < (feedback['rating'] as int)
+                    ? Icons.star
+                    : Icons.star_border,
                 color: Colors.amber,
                 size: 16,
               );
@@ -148,24 +162,25 @@ class _ServicesPageState extends State<ServicesPage>
       {
         'name': 'Sarah Johnson',
         'rating': 5,
-        'comment': 'The best braiding experience I’ve ever had! Highly recommend.'
+        'comment':
+            'The best braiding experience I’ve ever had! Highly recommend.',
       },
       {
         'name': 'Michael Brown',
         'rating': 5,
         'comment':
-            'Professional service and amazing atmosphere. My go-to place now.'
+            'Professional service and amazing atmosphere. My go-to place now.',
       },
       {
         'name': 'Elena Rodriguez',
         'rating': 4,
         'comment':
-            'Great styling and very attention to detail. Love the result!'
+            'Great styling and very attention to detail. Love the result!',
       },
       {
         'name': 'David Wilson',
         'rating': 5,
-        'comment': 'Amazing staff and very luxury vibes. Worth every penny.'
+        'comment': 'Amazing staff and very luxury vibes. Worth every penny.',
       },
     ];
 
@@ -199,7 +214,7 @@ class _ServicesPageState extends State<ServicesPage>
                 Text(
                   'Explore Luxury',
                   style: GoogleFonts.aboreto(
-                    color: AppTheme.primaryPink,
+                    color: AppTheme.primaryGold,
                     fontSize: 14,
                     fontWeight: FontWeight.bold,
                     letterSpacing: 3,
@@ -215,7 +230,7 @@ class _ServicesPageState extends State<ServicesPage>
                   ),
                 ),
                 const SizedBox(height: 32),
-                
+
                 // Services Grid/List
                 isDesktop
                     ? GridView.builder(
@@ -223,11 +238,11 @@ class _ServicesPageState extends State<ServicesPage>
                         physics: const NeverScrollableScrollPhysics(),
                         gridDelegate:
                             const SliverGridDelegateWithFixedCrossAxisCount(
-                          crossAxisCount: 3,
-                          mainAxisSpacing: 32,
-                          crossAxisSpacing: 32,
-                          childAspectRatio: 0.8,
-                        ),
+                              crossAxisCount: 3,
+                              mainAxisSpacing: 32,
+                              crossAxisSpacing: 32,
+                              childAspectRatio: 0.8,
+                            ),
                         itemCount: AppConstants.services.length,
                         itemBuilder: (context, index) =>
                             _buildAnimatedItem(index),
@@ -242,9 +257,9 @@ class _ServicesPageState extends State<ServicesPage>
                           child: _buildAnimatedItem(index),
                         ),
                       ),
-                
+
                 const SizedBox(height: 80),
-                
+
                 // Why Choose Us Section
                 Text(
                   'Why Beauty By Moblack?',
@@ -259,51 +274,60 @@ class _ServicesPageState extends State<ServicesPage>
                     ? Row(
                         children: [
                           Expanded(
-                              child: _buildBenefitCard(
-                                  'Premium Quality',
-                                  'We use only the finest products for your hair.',
-                                  Icons.high_quality,
-                                  0)),
+                            child: _buildBenefitCard(
+                              'Premium Quality',
+                              'We use only the finest products for your hair.',
+                              Icons.high_quality,
+                              0,
+                            ),
+                          ),
                           const SizedBox(width: 24),
                           Expanded(
-                              child: _buildBenefitCard(
-                                  'Expert Stylists',
-                                  'Our professionals are world-class experts.',
-                                  Icons.star,
-                                  1)),
+                            child: _buildBenefitCard(
+                              'Expert Stylists',
+                              'Our professionals are world-class experts.',
+                              Icons.star,
+                              1,
+                            ),
+                          ),
                           const SizedBox(width: 24),
                           Expanded(
-                              child: _buildBenefitCard(
-                                  'Luxury Vibe',
-                                  'Experience hair styling in ultimate comfort.',
-                                  Icons.spa,
-                                  2)),
+                            child: _buildBenefitCard(
+                              'Luxury Vibe',
+                              'Experience hair styling in ultimate comfort.',
+                              Icons.spa,
+                              2,
+                            ),
+                          ),
                         ],
                       )
                     : Column(
                         children: [
                           _buildBenefitCard(
-                              'Premium Quality',
-                              'We use only the finest products for your hair.',
-                              Icons.high_quality,
-                              0),
+                            'Premium Quality',
+                            'We use only the finest products for your hair.',
+                            Icons.high_quality,
+                            0,
+                          ),
                           const SizedBox(height: 16),
                           _buildBenefitCard(
-                              'Expert Stylists',
-                              'Our professionals are world-class experts.',
-                              Icons.star,
-                              1),
+                            'Expert Stylists',
+                            'Our professionals are world-class experts.',
+                            Icons.star,
+                            1,
+                          ),
                           const SizedBox(height: 16),
                           _buildBenefitCard(
-                              'Luxury Vibe',
-                              'Experience hair styling in ultimate comfort.',
-                              Icons.spa,
-                              2),
+                            'Luxury Vibe',
+                            'Experience hair styling in ultimate comfort.',
+                            Icons.spa,
+                            2,
+                          ),
                         ],
                       ),
-                
+
                 const SizedBox(height: 80),
-                
+
                 // Feedbacks Section
                 Text(
                   'What Our Clients Say',
@@ -316,16 +340,25 @@ class _ServicesPageState extends State<ServicesPage>
                 const SizedBox(height: 32),
                 SizedBox(
                   height: 200,
-                  child: ListView.separated(
-                    scrollDirection: Axis.horizontal,
-                    physics: const BouncingScrollPhysics(),
-                    itemCount: feedbacks.length,
-                    separatorBuilder: (_, __) => const SizedBox(width: 20),
-                    itemBuilder: (context, index) =>
-                        _buildFeedbackCard(feedbacks[index]),
+                  child: ScrollConfiguration(
+                    behavior: ScrollConfiguration.of(context).copyWith(
+                      dragDevices: {
+                        PointerDeviceKind.touch,
+                        PointerDeviceKind.mouse,
+                        PointerDeviceKind.trackpad,
+                      },
+                    ),
+                    child: ListView.separated(
+                      scrollDirection: Axis.horizontal,
+                      physics: const BouncingScrollPhysics(),
+                      itemCount: feedbacks.length,
+                      separatorBuilder: (_, _) => const SizedBox(width: 20),
+                      itemBuilder: (context, index) =>
+                          _buildFeedbackCard(feedbacks[index]),
+                    ),
                   ),
                 ),
-                const SizedBox(height: 80),
+                const SizedBox(height: 20),
               ],
             ),
           ),

@@ -143,7 +143,7 @@ class FooterSection extends StatelessWidget {
         const SizedBox(height: 24),
         Row(
           children: [
-            Icon(Icons.phone, color: AppTheme.primaryPink, size: 16),
+            Icon(Icons.phone, color: AppTheme.primaryGold, size: 16),
             SizedBox(width: 12),
             Text(
               AppConstants.phoneNum,
@@ -154,7 +154,7 @@ class FooterSection extends StatelessWidget {
         const SizedBox(height: 16),
         Row(
           children: [
-            Icon(Icons.mail, color: AppTheme.primaryPink, size: 16),
+            Icon(Icons.mail, color: AppTheme.primaryGold, size: 16),
             SizedBox(width: 12),
             Text(
               AppConstants.gmail,
@@ -180,7 +180,7 @@ class FooterSection extends StatelessWidget {
           children: [
             const Icon(
               Icons.location_on,
-              color: AppTheme.primaryPink,
+              color: AppTheme.primaryGold,
               size: 16,
             ),
             const SizedBox(width: 12),

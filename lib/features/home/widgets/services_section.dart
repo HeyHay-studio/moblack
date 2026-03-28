@@ -53,13 +53,13 @@ class ServicesSection extends StatelessWidget {
                   icon: const Text(
                     'See all services',
                     style: TextStyle(
-                      color: AppTheme.primaryPink,
+                      color: AppTheme.primaryGold,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
                   label: const Icon(
                     Icons.arrow_forward,
-                    color: AppTheme.primaryPink,
+                    color: AppTheme.primaryGold,
                   ),
                 ),
             ],
@@ -80,13 +80,13 @@ class ServicesSection extends StatelessWidget {
                 icon: const Text(
                   'See all services',
                   style: TextStyle(
-                    color: AppTheme.primaryPink,
+                    color: AppTheme.primaryGold,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
                 label: const Icon(
                   Icons.arrow_forward,
-                  color: AppTheme.primaryPink,
+                  color: AppTheme.primaryGold,
                 ),
               ),
             ),
@@ -133,7 +133,7 @@ class ServicesSection extends StatelessWidget {
             label: const Text(
               'See more',
               style: TextStyle(
-                color: AppTheme.primaryPink,
+                color: AppTheme.primaryGold,
                 fontWeight: FontWeight.bold,
               ),
             ),
@@ -211,7 +211,7 @@ class _ServiceCardState extends State<ServiceCard> {
           borderRadius: BorderRadius.circular(40),
           boxShadow: [
             BoxShadow(
-              color: AppTheme.primaryPink.withValues(
+              color: AppTheme.primaryGold.withValues(
                 alpha: _isHovered ? 0.3 : 0.0,
               ),
               blurRadius: _isHovered ? 30 : 20,
@@ -271,8 +271,8 @@ class _ServiceCardState extends State<ServiceCard> {
                   style: const TextStyle(
                     fontSize: 12,
                     fontWeight: FontWeight.bold,
-                    color: Colors.black,
-                    letterSpacing: 1,
+                    color: AppTheme.primaryGold,
+                    letterSpacing: 1.5,
                   ),
                 ),
               ),
@@ -316,7 +316,7 @@ class _ServiceCardState extends State<ServiceCard> {
                   ),
                   child: const Icon(
                     Icons.arrow_forward,
-                    color: AppTheme.primaryPink,
+                    color: AppTheme.primaryGold,
                   ),
                 ),
               ),

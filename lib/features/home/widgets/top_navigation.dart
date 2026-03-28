@@ -118,7 +118,7 @@ class TopNavigation extends StatelessWidget {
       return ElevatedButton(
         onPressed: () {},
         style: ElevatedButton.styleFrom(
-          backgroundColor: AppTheme.primaryPink,
+          backgroundColor: AppTheme.primaryGold,
           foregroundColor: Colors.white,
           padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 18),
           elevation: 5,

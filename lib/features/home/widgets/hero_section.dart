@@ -80,7 +80,6 @@ class _HeroSectionState extends State<HeroSection> {
                     colors: [
                       Colors.black.withAlpha(50),
                       Colors.black.withAlpha(50),
-                      AppTheme.primaryPink.withAlpha(40),
                       Colors.transparent,
                     ],
                     begin: Alignment.bottomLeft,
@@ -97,11 +96,11 @@ class _HeroSectionState extends State<HeroSection> {
               gradient: LinearGradient(
                 colors: [
                   Colors.black.withValues(alpha: 0.8),
-                  AppTheme.primaryPink.withValues(alpha: 0.2),
-                  Colors.transparent,
+                  Colors.white.withAlpha(50),
+                  AppTheme.primaryGold.withAlpha(50),
                 ],
-                begin: Alignment.bottomLeft,
-                end: Alignment.topRight,
+                begin: Alignment.topRight,
+                end: Alignment.bottomRight,
               ),
             ),
           ),
@@ -169,7 +168,7 @@ class _HeroSectionState extends State<HeroSection> {
         ElevatedButton(
           onPressed: () {},
           style: ElevatedButton.styleFrom(
-            backgroundColor: AppTheme.primaryPink,
+            backgroundColor: AppTheme.primaryGold,
             foregroundColor: Colors.white,
             padding: const EdgeInsets.symmetric(horizontal: 48, vertical: 24),
             shape: RoundedRectangleBorder(

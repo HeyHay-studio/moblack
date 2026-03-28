@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:moblack/core/constants.dart';
+import 'package:moblack/core/theme.dart';
 
 import '../../services/communication_service.dart';
 import '../../services/pages/services_page.dart';
@@ -205,7 +206,8 @@ class _MobileMenuState extends State<MobileMenu>
                                             Navigator.push(
                                               context,
                                               MaterialPageRoute(
-                                                builder: (context) => const ServicesPage(),
+                                                builder: (context) =>
+                                                    const ServicesPage(),
                                               ),
                                             );
                                           }
@@ -324,7 +326,7 @@ class _MobileMenuState extends State<MobileMenu>
                       ),
                       boxShadow: [
                         BoxShadow(
-                          color: const Color(0xFFFF1493).withAlpha(30),
+                          color: AppTheme.primaryGold.withAlpha(30),
                           blurRadius: 15,
                           spreadRadius: 2,
                         ),
@@ -353,7 +355,7 @@ class _MobileMenuState extends State<MobileMenu>
     return Text(
       'MENU',
       style: GoogleFonts.playfairDisplay(
-        color: Colors.white60,
+        color: AppTheme.backgroundBlack.withAlpha(120),
         letterSpacing: 3,
         fontSize: 18,
       ),
@@ -371,8 +373,8 @@ class _MobileMenuState extends State<MobileMenu>
           child: ElevatedButton(
             onPressed: () {},
             style: ElevatedButton.styleFrom(
-              backgroundColor: inverse ? Colors.white : Color(0xFFFF1493),
-              foregroundColor: inverse ? Color(0xFFFF1493) : Colors.white,
+              backgroundColor: inverse ? Colors.white : AppTheme.primaryGold,
+              foregroundColor: inverse ? AppTheme.primaryGold : Colors.white,
               padding: const EdgeInsets.symmetric(vertical: 22, horizontal: 18),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadiusGeometry.circular(18),

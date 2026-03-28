@@ -3,6 +3,7 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
+import 'package:moblack/core/theme.dart';
 
 class BookingSection extends StatefulWidget {
   final bool isDesktop;
@@ -112,7 +113,7 @@ class _BookingSectionState extends State<BookingSection> {
                 gradient: LinearGradient(
                   colors: [
                     Colors.white.withAlpha(20),
-                    Colors.pink.withAlpha(50),
+                    AppTheme.primaryGold.withAlpha(50),
                     Colors.transparent.withAlpha(80),
                   ],
                   begin: Alignment.bottomLeft,
@@ -197,7 +198,7 @@ class _BookingSectionState extends State<BookingSection> {
                                     ? FontWeight.bold
                                     : FontWeight.normal,
                               ),
-                              selectedColor: const Color(0xFFFF1493),
+                              selectedColor: AppTheme.primaryGold,
                               backgroundColor: Colors.white.withAlpha(50),
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(12),
@@ -256,7 +257,7 @@ class _BookingSectionState extends State<BookingSection> {
           style: TextStyle(
             fontWeight: FontWeight.bold,
             fontSize: 14,
-            color: isClosed ? const Color(0xFFFF1493) : Colors.white,
+            color: isClosed ? AppTheme.primaryGold : Colors.white,
           ),
         ),
       ],
@@ -438,7 +439,7 @@ class _BookingSectionState extends State<BookingSection> {
           child: AnimatedContainer(
             duration: const Duration(milliseconds: 200),
             decoration: BoxDecoration(
-              color: isSelected ? const Color(0xFFFF1493) : Colors.transparent,
+              color: isSelected ? AppTheme.primaryGold : Colors.transparent,
               borderRadius: BorderRadius.circular(12),
               border: isSelected
                   ? null
@@ -460,25 +461,6 @@ class _BookingSectionState extends State<BookingSection> {
           ),
         );
       },
-    );
-  }
-
-  Widget _buildTimeSlotSection() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        const SizedBox(height: 32),
-        const Text(
-          'Available Time',
-          style: TextStyle(
-            fontWeight: FontWeight.bold,
-            letterSpacing: 1,
-            color: Colors.white,
-          ),
-        ),
-        const SizedBox(height: 16),
-        // Use a SizedBox to define the height of your row
-      ],
     );
   }
 }

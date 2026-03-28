@@ -74,6 +74,33 @@ class AppConstants {
         "https://www.apprenticeship.ng/wp-content/uploads/2023/03/Wig-Making-Business-Plan-in-Nigeria.jpg",
       ],
     },
+    //Makeup
+    {
+      'title': 'Makeup',
+      'img': [
+        "https://colorsqueen.com/cdn/shop/files/MakeupFace.jpg?v=1744632488&width=1500",
+        "https://www.lemon8-app.com/seo/image?item_id=7441336438517416504&index=0&sign=ff31cdc337967bd11a4cc7b83951193e",
+        "https://i.pinimg.com/736x/ac/bc/0a/acbc0a8d19f6ed458056a149dc9127b4.jpg",
+      ],
+    },
+    //Pedicure
+    {
+      'title': 'Pedicure',
+      'img': [
+        "https://i.pinimg.com/736x/9e/21/ed/9e21ede004079509d5a60158e95cbf80.jpg",
+        "https://i.pinimg.com/736x/76/db/26/76db2611d67eeab51aaf5fc1f6e83b08.jpg",
+        "https://i.pinimg.com/736x/54/b9/56/54b956627da2324d18fa0058c7db91a2.jpg",
+      ],
+    },
+    //Manicure
+    {
+      'title': 'Manicure',
+      'img': [
+        "https://i.pinimg.com/originals/6d/07/49/6d0749aa61dffc16d39e62cf7c0b7b13.jpg",
+        "https://i.pinimg.com/736x/1e/33/e6/1e33e6295ff6414c6c8fcb25b22e46e3.jpg",
+        "https://i.pinimg.com/736x/28/ff/05/28ff051a8054b06f2124442c3ca0995a.jpg",
+      ],
+    },
   ];
 
   static const List<String> heroImages = [
