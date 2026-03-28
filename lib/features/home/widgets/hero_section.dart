@@ -49,13 +49,14 @@ class _HeroSectionState extends State<HeroSection> {
 
   @override
   Widget build(BuildContext context) {
+    final height = MediaQuery.heightOf(context);
+    final width = MediaQuery.widthOf(context);
     return SizedBox(
-      height: MediaQuery.of(context).size.height,
+      height: widget.isDesktop ? height : (height <= width ? width : height),
       width: double.infinity,
       child: Stack(
         fit: StackFit.expand,
         children: [
-          // Background Auto-Slider
           PageView.builder(
             controller: _pageController,
             itemCount: AppConstants.heroImages.length,
@@ -156,8 +157,8 @@ class _HeroSectionState extends State<HeroSection> {
         ),
         const SizedBox(height: 32),
         Text(
-          "Step into a world of refined elegance and bespoke artistry at MOBLACK."
-          " We don’t just style hair; we curate your signature look.",
+          "Step into a world of refined elegance and bespoke artistry at Beauty By Moblack."
+          "\nWe don’t just style hair; we curate your signature look.",
           textAlign: widget.isDesktop ? TextAlign.left : TextAlign.center,
           style: TextStyle(
             color: AppTheme.textWhite,

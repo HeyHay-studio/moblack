@@ -95,7 +95,8 @@ class _BookingSectionState extends State<BookingSection> {
         ),
         const SizedBox(height: 16),
         const Text(
-          'Ready for a transformative experience? Book your appointment now with MOBLACK.',
+          'Ready for a transformative experience?'
+          ' Book your appointment now with Beauty By Moblack.',
           style: TextStyle(color: Colors.grey, fontSize: 16),
         ),
         const SizedBox(height: 32),
@@ -160,51 +161,61 @@ class _BookingSectionState extends State<BookingSection> {
                   const SizedBox(height: 20),
                   SizedBox(
                     height: 40,
-                    child: ListView.builder(
-                      scrollDirection: Axis.horizontal,
-                      itemCount: _allTimeSlots.length,
-                      // BouncingScrollPhysics gives it a premium feel on mobile
-                      physics: const BouncingScrollPhysics(),
-                      itemBuilder: (context, index) {
-                        final time = _allTimeSlots[index];
-                        final isSelected = _selectedTime == time;
+                    child: ScrollConfiguration(
+                      behavior: ScrollConfiguration.of(context).copyWith(
+                        dragDevices: {
+                          PointerDeviceKind.touch,
+                          PointerDeviceKind.mouse,
+                          PointerDeviceKind.trackpad,
+                        },
+                      ),
+                      child: ListView.builder(
+                        scrollDirection: Axis.horizontal,
+                        itemCount: _allTimeSlots.length,
+                        physics: const BouncingScrollPhysics(),
+                        itemBuilder: (context, index) {
+                          final time = _allTimeSlots[index];
+                          final isSelected = _selectedTime == time;
 
-                        return Padding(
-                          // Spacing between the items
-                          padding: const EdgeInsets.only(right: 12),
-                          child: ChoiceChip(
-                            label: Text(time),
-                            selected: isSelected,
-                            onSelected: (selected) {
-                              setState(
-                                () => _selectedTime = selected ? time : null,
-                              );
-                            },
-                            labelStyle: TextStyle(
-                              color: isSelected ? Colors.white : Colors.white70,
-                              fontSize: 13,
-                              fontWeight: isSelected
-                                  ? FontWeight.bold
-                                  : FontWeight.normal,
-                            ),
-                            selectedColor: const Color(0xFFFF1493),
-                            backgroundColor: Colors.white.withAlpha(50),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(12),
-                              side: BorderSide(
+                          return Padding(
+                            // Spacing between the items
+                            padding: const EdgeInsets.only(right: 12),
+                            child: ChoiceChip(
+                              label: Text(time),
+                              selected: isSelected,
+                              onSelected: (selected) {
+                                setState(
+                                  () => _selectedTime = selected ? time : null,
+                                );
+                              },
+                              labelStyle: TextStyle(
                                 color: isSelected
-                                    ? Colors.transparent
-                                    : Colors.white10,
+                                    ? Colors.white
+                                    : Colors.white70,
+                                fontSize: 13,
+                                fontWeight: isSelected
+                                    ? FontWeight.bold
+                                    : FontWeight.normal,
+                              ),
+                              selectedColor: const Color(0xFFFF1493),
+                              backgroundColor: Colors.white.withAlpha(50),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(12),
+                                side: BorderSide(
+                                  color: isSelected
+                                      ? Colors.transparent
+                                      : Colors.white10,
+                                ),
+                              ),
+                              showCheckmark: false,
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 16,
+                                vertical: 8,
                               ),
                             ),
-                            showCheckmark: false,
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 16,
-                              vertical: 8,
-                            ),
-                          ),
-                        );
-                      },
+                          );
+                        },
+                      ),
                     ),
                   ),
                   const Divider(color: Colors.white12),
