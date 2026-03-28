@@ -6,6 +6,7 @@ import 'package:google_fonts/google_fonts.dart';
 
 import '../../../../core/constants.dart';
 import '../../../../core/theme.dart';
+import '../../services/pages/services_page.dart';
 
 class ServicesSection extends StatelessWidget {
   final bool isDesktop;
@@ -41,7 +42,14 @@ class ServicesSection extends StatelessWidget {
               ),
               if (isDesktop)
                 TextButton.icon(
-                  onPressed: () {},
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const ServicesPage(),
+                      ),
+                    );
+                  },
                   icon: const Text(
                     'See all services',
                     style: TextStyle(
@@ -61,7 +69,14 @@ class ServicesSection extends StatelessWidget {
             Align(
               alignment: Alignment.centerLeft,
               child: TextButton.icon(
-                onPressed: () {},
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const ServicesPage(),
+                    ),
+                  );
+                },
                 icon: const Text(
                   'See all services',
                   style: TextStyle(
@@ -109,7 +124,12 @@ class ServicesSection extends StatelessWidget {
           ),
           SizedBox(height: isDesktop ? 40 : 20),
           TextButton.icon(
-            onPressed: () {},
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const ServicesPage()),
+              );
+            },
             label: const Text(
               'See more',
               style: TextStyle(

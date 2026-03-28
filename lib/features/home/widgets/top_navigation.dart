@@ -5,6 +5,7 @@ import 'package:google_fonts/google_fonts.dart';
 
 import '../../../core/constants.dart';
 import '../../../core/theme.dart';
+import '../../services/pages/services_page.dart';
 
 class TopNavigation extends StatelessWidget {
   final bool isDesktop;
@@ -45,17 +46,20 @@ class TopNavigation extends StatelessWidget {
                       width: isDesktop ? 40 : 30,
                       decoration: const BoxDecoration(
                         image: DecorationImage(
-                          fit: BoxFit.contain, // contain is better for logos so they don't get cropped
+                          fit: BoxFit.contain,
+                          // contain is better for logos so they don't get cropped
                           image: AssetImage("assets/images/logo_removed.png"),
                         ),
                       ),
                     ),
-                    const SizedBox(width: 12), // Add visual space between the logo and text
+                    const SizedBox(width: 12),
+                    // Add visual space between the logo and text
                     Text(
                       'Beauty By Moblack',
                       style: GoogleFonts.playfairDisplay(
                         color: Colors.white,
-                        fontSize: isDesktop ? 24 : 18, // scaled down slightly for mobile to prevent overflow
+                        fontSize: isDesktop ? 24 : 18,
+                        // scaled down slightly for mobile to prevent overflow
                         fontWeight: FontWeight.bold,
                         letterSpacing: 2,
                       ),
@@ -63,7 +67,7 @@ class TopNavigation extends StatelessWidget {
                   ],
                 ),
 
-                if (isDesktop) _buildDesktopNav(),
+                if (isDesktop) _buildDesktopNav(context),
                 _buildActionArea(),
               ],
             ),
@@ -73,21 +77,33 @@ class TopNavigation extends StatelessWidget {
     );
   }
 
-  Widget _buildDesktopNav() {
+  Widget _buildDesktopNav(BuildContext context) {
     return Row(
       children: AppConstants.navLinks
           .map(
-            (link) => Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20),
-              child: MouseRegion(
-                cursor: SystemMouseCursors.click,
-                child: Text(
-                  link.toUpperCase(),
-                  style: const TextStyle(
-                    color: Colors.white,
-                    fontSize: 13,
-                    fontWeight: FontWeight.w600,
-                    letterSpacing: 1.2,
+            (link) => GestureDetector(
+              onTap: () {
+                if (link == 'Services') {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const ServicesPage(),
+                    ),
+                  );
+                }
+              },
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 20),
+                child: MouseRegion(
+                  cursor: SystemMouseCursors.click,
+                  child: Text(
+                    link.toUpperCase(),
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 13,
+                      fontWeight: FontWeight.w600,
+                      letterSpacing: 1.2,
+                    ),
                   ),
                 ),
               ),

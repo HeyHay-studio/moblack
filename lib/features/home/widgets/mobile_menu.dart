@@ -6,6 +6,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:moblack/core/constants.dart';
 
 import '../../services/communication_service.dart';
+import '../../services/pages/services_page.dart';
 import '../../widgets/fav_icon.dart';
 
 class MobileMenu extends StatefulWidget {
@@ -193,11 +194,22 @@ class _MobileMenuState extends State<MobileMenu>
                                     const SizedBox(height: 10),
 
                                     ...List.generate(navLinks.length, (index) {
+                                      final label = navLinks[index];
                                       return _buildStaggeredLink(
-                                        navLinks[index],
+                                        label,
                                         index,
                                         navLinks.length,
-                                        () => widget.onClose,
+                                        () {
+                                          widget.onClose();
+                                          if (label == 'Services') {
+                                            Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                builder: (context) => const ServicesPage(),
+                                              ),
+                                            );
+                                          }
+                                        },
                                       );
                                     }),
 
