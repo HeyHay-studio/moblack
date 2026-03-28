@@ -33,7 +33,7 @@ class ServicesSection extends StatelessWidget {
                     const SizedBox(height: 16),
                     const Text(
                       'Beyond hairstyle, discover a comprehensive range of '
-                      'services, from coloring to extensions.',
+                      'services, from coloring to extensions and more...',
                       style: TextStyle(color: Colors.grey, fontSize: 16),
                     ),
                   ],
