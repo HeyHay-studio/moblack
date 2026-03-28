@@ -4,8 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../../../core/constants.dart';
+import '../../../core/services/pages/services_page.dart';
 import '../../../core/theme.dart';
-import '../../services/pages/services_page.dart';
 
 class TopNavigation extends StatelessWidget {
   final bool isDesktop;

@@ -6,8 +6,8 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../../../../core/constants.dart';
-import '../../../../core/services/cloudinary_service.dart';
 import '../../../../core/theme.dart';
+import '../../../core/services/cloudinary_service.dart';
 import 'hero_video_background.dart';
 
 class HeroSection extends StatefulWidget {

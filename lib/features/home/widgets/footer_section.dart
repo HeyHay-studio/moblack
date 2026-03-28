@@ -5,7 +5,7 @@ import 'package:moblack/core/constants.dart';
 import 'package:moblack/features/widgets/fav_icon.dart';
 
 import '../../../../core/theme.dart';
-import '../../services/communication_service.dart';
+import '../../../core/services/communication_service.dart';
 
 class FooterSection extends StatelessWidget {
   final bool isDesktop;

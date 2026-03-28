@@ -5,7 +5,7 @@ import 'package:google_fonts/google_fonts.dart';
 
 import '../../../core/constants.dart';
 import '../../../core/theme.dart';
-import '../../home/widgets/services_section.dart';
+import '../../../features/home/widgets/services_section.dart';
 
 class ServicesPage extends StatefulWidget {
   final List<Map<String, dynamic>>? dynamicServices;

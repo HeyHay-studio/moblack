@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
 
-import '../../core/services/cloudinary_service.dart';
 import '../../core/constants.dart';
+import '../../core/services/cloudinary_service.dart';
 import '../../core/theme.dart';
 import 'widgets/booking_section.dart';
 import 'widgets/footer_section.dart';
-import 'widgets/hero_section.dart';
 import 'widgets/gallery_section.dart';
+import 'widgets/hero_section.dart';
 import 'widgets/mobile_menu.dart';
+import 'widgets/products_section.dart';
 import 'widgets/services_section.dart';
 import 'widgets/top_navigation.dart';
-import 'widgets/products_section.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -40,8 +40,9 @@ class _HomePageState extends State<HomePage> {
   }
 
   Future<void> _fetchMasterData() async {
-    final assets =
-        await CloudinaryService.fetchMixedAssetsByTag(AppConstants.mainTag);
+    final assets = await CloudinaryService.fetchMixedAssetsByTag(
+      AppConstants.mainTag,
+    );
     if (mounted) {
       setState(() {
         _allResources = assets;

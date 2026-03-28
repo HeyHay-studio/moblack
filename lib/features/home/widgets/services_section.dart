@@ -4,9 +4,8 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-import '../../../../core/constants.dart';
 import '../../../../core/theme.dart';
-import '../../services/pages/services_page.dart';
+import '../../../core/services/pages/services_page.dart';
 
 class ServicesSection extends StatelessWidget {
   final bool isDesktop;
@@ -51,9 +50,8 @@ class ServicesSection extends StatelessWidget {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => ServicesPage(
-                          dynamicServices: dynamicServices,
-                        ),
+                        builder: (context) =>
+                            ServicesPage(dynamicServices: dynamicServices),
                       ),
                     );
                   },

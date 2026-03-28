@@ -6,8 +6,8 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:moblack/core/constants.dart';
 import 'package:moblack/core/theme.dart';
 
-import '../../services/communication_service.dart';
-import '../../services/pages/services_page.dart';
+import '../../../core/services/communication_service.dart';
+import '../../../core/services/pages/services_page.dart';
 import '../../widgets/fav_icon.dart';
 
 class MobileMenu extends StatefulWidget {
