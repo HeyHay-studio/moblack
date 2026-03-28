@@ -144,7 +144,6 @@ class _HeroSectionState extends State<HeroSection> {
           : CrossAxisAlignment.center,
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        SizedBox(height: widget.isDesktop ? 0 : 50),
         Text(
           'Everything Beauty...',
           textAlign: widget.isDesktop ? TextAlign.left : TextAlign.center,
