@@ -1,16 +1,20 @@
 import 'dart:async';
+import 'dart:developer';
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../../../../core/constants.dart';
+import '../../../../core/services/cloudinary_service.dart';
 import '../../../../core/theme.dart';
+import 'hero_video_background.dart';
 
 class HeroSection extends StatefulWidget {
   final bool isDesktop;
+  final List<CloudinaryResource>? allResources;
 
-  const HeroSection({super.key, required this.isDesktop});
+  const HeroSection({super.key, required this.isDesktop, this.allResources});
 
   @override
   State<HeroSection> createState() => _HeroSectionState();
@@ -20,21 +24,92 @@ class _HeroSectionState extends State<HeroSection> {
   final PageController _pageController = PageController();
   int _currentPage = 0;
   Timer? _timer;
+  List<CloudinaryResource> _heroResources = [];
+  bool _isLoading = true;
 
   @override
   void initState() {
     super.initState();
-    _timer = Timer.periodic(const Duration(seconds: 5), (Timer time) {
+    if (widget.allResources != null && widget.allResources!.isNotEmpty) {
+      _processResources(widget.allResources!);
+    } else {
+      _fetchAssets();
+    }
+  }
+
+  @override
+  void didUpdateWidget(HeroSection oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (widget.allResources != oldWidget.allResources &&
+        widget.allResources != null) {
+      _processResources(widget.allResources!);
+    }
+  }
+
+  void _processResources(List<CloudinaryResource> assets) {
+    // Separate videos and images
+    final videos =
+        assets
+            .where((r) => r.type == CloudinaryResourceType.video)
+            .take(4)
+            .toList()
+          ..shuffle();
+    final images =
+        assets
+            .where((r) => r.type == CloudinaryResourceType.image)
+            .take(4)
+            .toList()
+          ..shuffle();
+
+    // Priority: Videos first, then random images
+    final combined = [...videos, ...images];
+
+    if (mounted) {
+      setState(() {
+        _heroResources = combined.isNotEmpty
+            ? combined
+            : _getFallbackResources();
+        _isLoading = false;
+      });
+      _startTimer();
+    }
+  }
+
+  Future<void> _fetchAssets() async {
+    final assets = await CloudinaryService.fetchMixedAssetsByTag(
+      AppConstants.heroTag,
+    );
+    _processResources(assets);
+    log('Hero assets fetched manually: ${assets.isNotEmpty}');
+  }
+
+  List<CloudinaryResource> _getFallbackResources() {
+    return AppConstants.heroImages
+        .map(
+          (url) => CloudinaryResource(
+            url: url,
+            type: CloudinaryResourceType.image,
+            publicId: 'fallback',
+          ),
+        )
+        .toList();
+  }
+
+  void _startTimer() {
+    _timer?.cancel();
+    if (_heroResources.isEmpty) return;
+
+    _timer = Timer.periodic(const Duration(seconds: 8), (Timer time) {
       if (_pageController.hasClients) {
-        if (_currentPage < AppConstants.heroImages.length - 1) {
+        if (_currentPage < _heroResources.length - 1) {
           _currentPage++;
         } else {
           _currentPage = 0;
         }
         _pageController.animateToPage(
           _currentPage,
-          duration: const Duration(milliseconds: 1000),
-          curve: Curves.easeInOutCirc,
+          duration: const Duration(milliseconds: 1500),
+          curve: Curves.easeInOutCubic,
         );
       }
     });
@@ -51,6 +126,17 @@ class _HeroSectionState extends State<HeroSection> {
   Widget build(BuildContext context) {
     final height = MediaQuery.heightOf(context);
     final width = MediaQuery.widthOf(context);
+
+    if (_isLoading) {
+      return Container(
+        height: height,
+        color: AppTheme.backgroundBlack,
+        child: const Center(
+          child: CircularProgressIndicator(color: AppTheme.primaryGold),
+        ),
+      );
+    }
+
     return SizedBox(
       height: widget.isDesktop ? height : (height <= width ? width : height),
       width: double.infinity,
@@ -59,14 +145,24 @@ class _HeroSectionState extends State<HeroSection> {
         children: [
           PageView.builder(
             controller: _pageController,
-            itemCount: AppConstants.heroImages.length,
+            itemCount: _heroResources.length,
             onPageChanged: (idx) {
-              _currentPage = idx;
+              setState(() {
+                _currentPage = idx;
+              });
             },
             itemBuilder: (context, index) {
+              final resource = _heroResources[index];
+              if (resource.type == CloudinaryResourceType.video) {
+                return HeroVideoBackground(url: resource.url);
+              }
               return Image.network(
-                AppConstants.heroImages[index],
+                resource.url,
                 fit: BoxFit.cover,
+                loadingBuilder: (context, child, progress) {
+                  if (progress == null) return child;
+                  return Container(color: Colors.black26);
+                },
               );
             },
           ),
@@ -137,64 +233,71 @@ class _HeroSectionState extends State<HeroSection> {
   }
 
   Widget _buildHeroContent() {
-    return Column(
-      crossAxisAlignment: widget.isDesktop
-          ? CrossAxisAlignment.start
-          : CrossAxisAlignment.center,
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        if (!widget.isDesktop) SizedBox(height: 40),
-        Text(
-          'Everything Beauty...',
-          textAlign: widget.isDesktop ? TextAlign.left : TextAlign.center,
-          style: GoogleFonts.playfairDisplay(
-            color: Colors.white,
-            fontSize: widget.isDesktop ? 64 : 48,
-            fontWeight: FontWeight.normal,
-            height: 1.1,
-          ),
-        ),
-        const SizedBox(height: 32),
-        Text(
-          "Step into a world of refined elegance and bespoke artistry at Beauty By Moblack."
-          "\nWe don’t just style hair; we curate your signature look.",
-          textAlign: widget.isDesktop ? TextAlign.left : TextAlign.center,
-          style: TextStyle(
-            color: AppTheme.textWhite,
-            fontSize: 18,
-            height: 1.5,
-          ),
-        ),
-        const SizedBox(height: 48),
-        ElevatedButton(
-          onPressed: () {},
-          style: ElevatedButton.styleFrom(
-            backgroundColor: AppTheme.primaryGold,
-            foregroundColor: Colors.white,
-            padding: const EdgeInsets.symmetric(horizontal: 48, vertical: 24),
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(30),
+    return SingleChildScrollView(
+      physics: const BouncingScrollPhysics(),
+      child: Column(
+        crossAxisAlignment: widget.isDesktop
+            ? CrossAxisAlignment.start
+            : CrossAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          if (!widget.isDesktop) const SizedBox(height: 60),
+          Text(
+            'Everything Beauty...',
+            textAlign: widget.isDesktop ? TextAlign.left : TextAlign.center,
+            style: GoogleFonts.playfairDisplay(
+              color: Colors.white,
+              fontSize: widget.isDesktop ? 64 : 42,
+              fontWeight: FontWeight.normal,
+              height: 1.1,
             ),
-            elevation: 10,
           ),
-          child: const Text(
-            'Book appointment',
-            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+          SizedBox(height: widget.isDesktop ? 32 : 16),
+          Text(
+            "Step into a world of refined elegance and bespoke artistry at Beauty By Moblack."
+            "\nWe don’t just style hair; we curate your signature look.",
+            textAlign: widget.isDesktop ? TextAlign.left : TextAlign.center,
+            style: TextStyle(
+              color: AppTheme.textWhite,
+              fontSize: widget.isDesktop ? 18 : 16,
+              height: 1.5,
+            ),
           ),
-        ),
-        const SizedBox(height: 48),
-        Wrap(
-          spacing: 16,
-          runSpacing: 16,
-          alignment: widget.isDesktop
-              ? WrapAlignment.start
-              : WrapAlignment.center,
-          children: [
-            _buildStatCard('New Arrivals', 'Products'),
-            _buildStatCard('Only Today', '50% OFF'),
-          ],
-        ),
-      ],
+          SizedBox(height: widget.isDesktop ? 48 : 24),
+          ElevatedButton(
+            onPressed: () {},
+            style: ElevatedButton.styleFrom(
+              backgroundColor: AppTheme.primaryGold,
+              foregroundColor: Colors.white,
+              padding: EdgeInsets.symmetric(
+                horizontal: widget.isDesktop ? 48 : 32,
+                vertical: widget.isDesktop ? 24 : 18,
+              ),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(30),
+              ),
+              elevation: 10,
+            ),
+            child: const Text(
+              'Book appointment',
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            ),
+          ),
+          SizedBox(height: widget.isDesktop ? 48 : 24),
+          Wrap(
+            spacing: 16,
+            runSpacing: 16,
+            alignment: widget.isDesktop
+                ? WrapAlignment.start
+                : WrapAlignment.center,
+            children: [
+              _buildStatCard('New Arrivals', 'Products'),
+              _buildStatCard('Only Today', '50% OFF'),
+            ],
+          ),
+          if (!widget.isDesktop) const SizedBox(height: 40),
+        ],
+      ),
     );
   }
 

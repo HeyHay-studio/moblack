@@ -1,7 +1,18 @@
 class AppConstants {
+  // --- CONTACT INFO ---
   static const String phoneNum = '+233555207062';
   static const String gmail = 'beautybymoblack@gmail.com';
 
+  // --- CLOUDINARY CONFIG (Optional but Recommended) ---
+  // Replace with your Cloudinary Cloud Name if you want to use shortened paths
+  static const String cloudName = "di6avgdw1";
+  static const String galleryTag = "gallery";
+  static const String heroTag = "hero";
+  static const String mainTag = "gallery";
+  static const String cloudinaryBaseUrl =
+      "https://res.cloudinary.com/$cloudName/image/upload/";
+
+  // --- NAVIGATION ---
   static const List<String> navLinks = [
     'Home',
     'Services',
@@ -10,99 +21,7 @@ class AppConstants {
     'About',
   ];
 
-  static const List<Map<String, dynamic>> services = [
-    //Braiding
-    {
-      'title': 'Braiding',
-      'img': [
-        'https://plus.unsplash.com/premium_photo-1694618624500-3abfdba0bfd6?q=80&w=687&auto=format&fit=crop',
-        'https://images.unsplash.com/photo-1616166183781-0fdd2ef83374?w=500&auto=format&fit=crop',
-        'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQF2Vuiyy3E4ifmgwblY2D-dEGjlI0Nj2ApsQ&s',
-      ],
-    },
-    //Installation
-    {
-      'title': 'Installation',
-      'img': [
-        'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTkjBsJ4B6ymbBMaBdZE3DJ0vGhUt8dWQFZTw&s',
-        'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS3KBzYvRj_pe1sKCVssNN0_Kabvr2yQK78ew&s',
-        'https://www.styleseat.com/blog/wp-content/uploads/2021/09/01-clip-in-extensions.jpg',
-      ],
-    },
-    //Revamping
-    {
-      'title': 'Revamping',
-      'img': [
-        'https://cdn11.bigcommerce.com/s-1xo6r218zd/images/stencil/1280x1280/products/4373/6133/CL-3500_WEB_Features_06__47834.1771413115.jpg?c=1',
-        'https://framerusercontent.com/images/w7F0I36fVoWAexlVMWbZRW91wJg.png?width=1080&height=1080',
-        'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS4ku1hHw9CVKGMJQhMeR7XpLx13R9WxQc_zA&s',
-      ],
-    },
-    //Ventilation
-    {
-      'title': 'Ventilation',
-      'img': [
-        'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQOX4D_9v7Mm_efn2WILRfZ9Kxyo9UFykm41A&s',
-        'https://i.pinimg.com/videos/thumbnails/originals/62/3d/72/623d723868930ce2ecdb766fe121a2e0.0000000.jpg',
-        'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQNQqd_XvNCjIdPL_0K0RVUv55pSIiS44LOlQ&s',
-      ],
-    },
-    //Coloring/Bleaching
-    {
-      'title': 'Coloring/Bleaching',
-      'img': [
-        'https://www.rootflage.com/cdn/shop/articles/how-to-bleach-black-hair.jpg?v=1642703449',
-        'https://img.freepik.com/premium-photo/hairdresser-black-gloves-paints-brunette-woman-s-hair-beauty-salon_427957-3324.jpg',
-        'https://uptownnewyorkstyle.com/wp-content/uploads/2022/11/prevent-chemical-burns-on-scalp-ft.jpg',
-      ],
-    },
-    //styling
-    {
-      'title': 'styling',
-      'img': [
-        "https://www.bellanaija.com/wp-content/uploads/2023/05/314734446_747597160120355_8537999063044706868_n.jpg",
-        "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSqNKFFWsNA0FnS2CRG9VPF2q7-bboiZFTdqQ&s",
-        "https://cdn.shopify.com/s/files/1/1767/9375/files/05Party_hairstyles_afrocenchix_Insta_thedemarah_480x480.jpg?v=1701239409",
-      ],
-    },
-    //Wig making
-    {
-      'title': 'Wig making',
-      'img': [
-        "https://www.iseehair.com/media/catalog/product/z/h/zhutu-5_11_.jpg",
-        "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQfTfGG_KZZ091XFk-UttnfFS6YN1NRRMbbb_hQhCjpAQ&s",
-        "https://www.apprenticeship.ng/wp-content/uploads/2023/03/Wig-Making-Business-Plan-in-Nigeria.jpg",
-      ],
-    },
-    //Makeup
-    {
-      'title': 'Makeup',
-      'img': [
-        "https://colorsqueen.com/cdn/shop/files/MakeupFace.jpg?v=1744632488&width=1500",
-        "https://www.lemon8-app.com/seo/image?item_id=7441336438517416504&index=0&sign=ff31cdc337967bd11a4cc7b83951193e",
-        "https://i.pinimg.com/736x/ac/bc/0a/acbc0a8d19f6ed458056a149dc9127b4.jpg",
-      ],
-    },
-    //Pedicure
-    {
-      'title': 'Pedicure',
-      'img': [
-        "https://i.pinimg.com/736x/9e/21/ed/9e21ede004079509d5a60158e95cbf80.jpg",
-        "https://i.pinimg.com/736x/76/db/26/76db2611d67eeab51aaf5fc1f6e83b08.jpg",
-        "https://i.pinimg.com/736x/54/b9/56/54b956627da2324d18fa0058c7db91a2.jpg",
-      ],
-    },
-    //Manicure
-    {
-      'title': 'Manicure',
-      'img': [
-        "https://i.pinimg.com/originals/6d/07/49/6d0749aa61dffc16d39e62cf7c0b7b13.jpg",
-        "https://i.pinimg.com/736x/1e/33/e6/1e33e6295ff6414c6c8fcb25b22e46e3.jpg",
-        "https://i.pinimg.com/736x/28/ff/05/28ff051a8054b06f2124442c3ca0995a.jpg",
-      ],
-    },
-  ];
-
+  // --- HERO SECTION ASSETS ---
   static const List<String> heroImages = [
     "https://plus.unsplash.com/premium_photo-1694618624500-3abfdba0bfd6?q=80&w=687&auto=format&fit=crop",
     "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTkjBsJ4B6ymbBMaBdZE3DJ0vGhUt8dWQFZTw&s",
@@ -111,5 +30,82 @@ class AppConstants {
     "https://www.rootflage.com/cdn/shop/articles/how-to-bleach-black-hair.jpg?v=1642703449",
     "https://www.bellanaija.com/wp-content/uploads/2023/05/314734446_747597160120355_8537999063044706868_n.jpg",
     'https://img.freepik.com/premium-photo/hairdresser-black-gloves-paints-brunette-woman-s-hair-beauty-salon_427957-3324.jpg',
+  ];
+
+  // Placeholder for background video - Cloudinary/Firebase link goes here
+  static const String heroBackgroundVideo = "";
+
+  // --- SERVICES DATA ---
+  static const List<Map<String, dynamic>> services = [
+    {
+      'title': 'Braiding',
+      'folderKey': 'services/Braiding/images',
+      'img': [],
+      'video': '',
+    },
+    {
+      'title': 'Installation',
+      'folderKey': 'services/Installation/images',
+      'img': [],
+    },
+    {
+      'title': 'Revamping',
+      'folderKey': 'services/Revamping/images',
+      'img': [],
+    },
+    {
+      'title': 'Ventilation',
+      'folderKey': 'services/Ventilation/images',
+      'img': [],
+    },
+    {
+      'title': 'Coloring/Bleaching',
+      'folderKey': 'services/Coloring/Bleaching/images',
+      'img': [],
+    },
+    {
+      'title': 'Styling',
+      'folderKey': 'services/Styling/images',
+      'img': [],
+    },
+    {
+      'title': 'Wig making',
+      'folderKey': 'services/Wig making/images',
+      'img': [],
+    },
+    {
+      'title': 'Makeup',
+      'folderKey': 'services/Makeup/images',
+      'img': [],
+    },
+    {
+      'title': 'Pedicure',
+      'folderKey': 'services/Pedicure/images',
+      'img': [],
+    },
+    {
+      'title': 'Manicure',
+      'folderKey': 'services/Manicure/images',
+      'img': [],
+    },
+  ];
+
+  // --- PRODUCTS DATA ---
+  static const String productFolderKey = 'Products/Hairs/images';
+
+  // --- GALLERY SECTION ---
+  static const List<String> galleryImages = [
+    "https://images.unsplash.com/photo-1522335711546-267924fe378a?q=80&w=1470&auto=format&fit=crop",
+    "https://images.unsplash.com/photo-1616166183781-0fdd2ef83374?w=500&auto=format&fit=crop",
+    "https://images.unsplash.com/photo-1595476108010-b4d1f102b1b1?q=80&w=1374&auto=format&fit=crop",
+    "https://images.unsplash.com/photo-1512496011220-42ecaa6b33ec?q=80&w=1542&auto=format&fit=crop",
+    "https://images.unsplash.com/photo-1492106087820-71f1a00d2b11?q=80&w=1374&auto=format&fit=crop",
+    "https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?q=80&w=1469&auto=format&fit=crop",
+    "https://images.unsplash.com/photo-1560066984-138dadb4c035?q=80&w=1374&auto=format&fit=crop",
+    "https://images.unsplash.com/photo-1620331311520-246422ff82f9?q=80&w=1374&auto=format&fit=crop",
+  ];
+
+  static const List<String> galleryVideos = [
+    // Add links to hosted video testimonials or work here
   ];
 }

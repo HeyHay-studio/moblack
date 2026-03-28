@@ -8,7 +8,9 @@ import '../../../core/theme.dart';
 import '../../home/widgets/services_section.dart';
 
 class ServicesPage extends StatefulWidget {
-  const ServicesPage({super.key});
+  final List<Map<String, dynamic>>? dynamicServices;
+
+  const ServicesPage({super.key, this.dynamicServices});
 
   @override
   State<ServicesPage> createState() => _ServicesPageState();
@@ -17,10 +19,12 @@ class ServicesPage extends StatefulWidget {
 class _ServicesPageState extends State<ServicesPage>
     with SingleTickerProviderStateMixin {
   late AnimationController _controller;
+  late List<Map<String, dynamic>> _displayServices;
 
   @override
   void initState() {
     super.initState();
+    _displayServices = widget.dynamicServices ?? AppConstants.services;
     _controller = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 1800),
@@ -35,7 +39,7 @@ class _ServicesPageState extends State<ServicesPage>
   }
 
   Widget _buildAnimatedItem(int index) {
-    final service = AppConstants.services[index];
+    final service = _displayServices[index];
 
     // Stagger algorithm
     final double startDelay = (index * 0.1).clamp(0.0, 0.7);
@@ -243,14 +247,14 @@ class _ServicesPageState extends State<ServicesPage>
                               crossAxisSpacing: 32,
                               childAspectRatio: 0.8,
                             ),
-                        itemCount: AppConstants.services.length,
+                        itemCount: _displayServices.length,
                         itemBuilder: (context, index) =>
                             _buildAnimatedItem(index),
                       )
                     : ListView.separated(
                         shrinkWrap: true,
                         physics: const NeverScrollableScrollPhysics(),
-                        itemCount: AppConstants.services.length,
+                        itemCount: _displayServices.length,
                         separatorBuilder: (_, __) => const SizedBox(height: 32),
                         itemBuilder: (context, index) => SizedBox(
                           height: 450,

@@ -11,12 +11,14 @@ class TopNavigation extends StatelessWidget {
   final bool isDesktop;
   final bool isMenuOpen;
   final VoidCallback onMenuToggle;
+  final Function(String)? onNavTap;
 
   const TopNavigation({
     super.key,
     required this.isDesktop,
     required this.isMenuOpen,
     required this.onMenuToggle,
+    this.onNavTap,
   });
 
   @override
@@ -90,6 +92,8 @@ class TopNavigation extends StatelessWidget {
                       builder: (context) => const ServicesPage(),
                     ),
                   );
+                } else if (onNavTap != null) {
+                  onNavTap!(link);
                 }
               },
               child: Padding(

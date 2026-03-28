@@ -13,11 +13,13 @@ import '../../widgets/fav_icon.dart';
 class MobileMenu extends StatefulWidget {
   final bool isMenuOpen;
   final VoidCallback onClose;
+  final Function(String)? onNavTap;
 
   const MobileMenu({
     super.key,
     required this.isMenuOpen,
     required this.onClose,
+    this.onNavTap,
   });
 
   @override
@@ -210,6 +212,8 @@ class _MobileMenuState extends State<MobileMenu>
                                                     const ServicesPage(),
                                               ),
                                             );
+                                          } else if (widget.onNavTap != null) {
+                                            widget.onNavTap!(label);
                                           }
                                         },
                                       );

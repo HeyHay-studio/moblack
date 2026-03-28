@@ -10,8 +10,13 @@ import '../../services/pages/services_page.dart';
 
 class ServicesSection extends StatelessWidget {
   final bool isDesktop;
+  final List<Map<String, dynamic>> dynamicServices;
 
-  const ServicesSection({super.key, required this.isDesktop});
+  const ServicesSection({
+    super.key,
+    required this.isDesktop,
+    required this.dynamicServices,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -46,7 +51,9 @@ class ServicesSection extends StatelessWidget {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => const ServicesPage(),
+                        builder: (context) => ServicesPage(
+                          dynamicServices: dynamicServices,
+                        ),
                       ),
                     );
                   },
@@ -95,7 +102,7 @@ class ServicesSection extends StatelessWidget {
             builder: (context, constraints) {
               if (isDesktop) {
                 return Row(
-                  children: AppConstants.services
+                  children: dynamicServices
                       .take(4)
                       .map(
                         (s) => Expanded(
@@ -109,7 +116,7 @@ class ServicesSection extends StatelessWidget {
                 );
               } else {
                 return Column(
-                  children: AppConstants.services
+                  children: dynamicServices
                       .take(4)
                       .map(
                         (s) => Padding(
