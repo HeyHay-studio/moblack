@@ -49,13 +49,14 @@ class _HeroSectionState extends State<HeroSection> {
 
   @override
   Widget build(BuildContext context) {
+    final height = MediaQuery.heightOf(context);
+    final width = MediaQuery.widthOf(context);
     return SizedBox(
-      height: MediaQuery.of(context).size.height,
+      height: widget.isDesktop ? height : (height <= width ? width : height),
       width: double.infinity,
       child: Stack(
         fit: StackFit.expand,
         children: [
-          // Background Auto-Slider
           PageView.builder(
             controller: _pageController,
             itemCount: AppConstants.heroImages.length,
