@@ -97,17 +97,17 @@ class CloudinaryService {
   }
 
   /// Groups a list of resources by their asset folder path
-  static Map<String, List<String>> groupByFolder(
+  static Map<String, List<CloudinaryResource>> groupByFolder(
     List<CloudinaryResource> resources,
   ) {
-    final Map<String, List<String>> grouped = {};
+    final Map<String, List<CloudinaryResource>> grouped = {};
 
     for (var res in resources) {
       final folder = res.assetFolder ?? 'uncategorized';
       if (!grouped.containsKey(folder)) {
         grouped[folder] = [];
       }
-      grouped[folder]!.add(res.url);
+      grouped[folder]!.add(res);
     }
 
     return grouped;

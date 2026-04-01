@@ -5,7 +5,9 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../../../../core/theme.dart';
+import '../../../core/services/cloudinary_service.dart';
 import '../../../core/services/pages/services_page.dart';
+import 'video_provider_widget.dart';
 
 class ServicesSection extends StatelessWidget {
   final bool isDesktop;
@@ -78,7 +80,8 @@ class ServicesSection extends StatelessWidget {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => const ServicesPage(),
+                      builder: (context) =>
+                          ServicesPage(dynamicServices: dynamicServices),
                     ),
                   );
                 },
@@ -101,7 +104,11 @@ class ServicesSection extends StatelessWidget {
               if (isDesktop) {
                 return Row(
                   children: dynamicServices
-                      .take(4)
+                      .take(
+                        dynamicServices.length >= 4
+                            ? 4
+                            : dynamicServices.length,
+                      )
                       .map(
                         (s) => Expanded(
                           child: Padding(
@@ -162,12 +169,33 @@ class _ServiceCardState extends State<ServiceCard> {
   bool _isHovered = false;
   final PageController _pageController = PageController();
   Timer? _timer;
-  late List<String> images;
+  late List<dynamic> mediaItems;
 
   @override
   void initState() {
-    images = List<String>.from(widget.serviceData['img'] ?? []);
-    _startSlideshow(images.length);
+    final dynamicMedia = widget.serviceData['media'] as List?;
+    if (dynamicMedia != null && dynamicMedia.isNotEmpty) {
+      // Hero Logic: Separate, Shuffle, Take up to 6 of each
+      final allResources = List<CloudinaryResource>.from(dynamicMedia);
+      
+      final videos = allResources
+          .where((r) => r.type == CloudinaryResourceType.video)
+          .toList()
+        ..shuffle();
+      final selectedVideos = videos.take(6).toList();
+
+      final images = allResources
+          .where((r) => r.type == CloudinaryResourceType.image)
+          .toList()
+        ..shuffle();
+      final selectedImages = images.take(6).toList();
+
+      mediaItems = [...selectedVideos, ...selectedImages]..shuffle();
+    } else {
+      // Fallback: Shuffle static images
+      mediaItems = List<String>.from(widget.serviceData['img'] ?? [])..shuffle();
+    }
+    _startSlideshow(mediaItems.length);
     super.initState();
   }
 
@@ -236,9 +264,19 @@ class _ServiceCardState extends State<ServiceCard> {
                 child: PageView.builder(
                   physics: BouncingScrollPhysics(),
                   controller: _pageController,
-                  itemCount: images.length,
+                  itemCount: mediaItems.length,
                   itemBuilder: (context, index) {
-                    return Image.network(images[index], fit: BoxFit.cover);
+                    final item = mediaItems[index];
+
+                    if (item is CloudinaryResource) {
+                      if (item.type == CloudinaryResourceType.video) {
+                        return VideoProviderWidget(videoUrl: item.url);
+                      }
+                      return Image.network(item.url, fit: BoxFit.cover);
+                    }
+
+                    // Fallback for static image strings
+                    return Image.network(item as String, fit: BoxFit.cover);
                   },
                 ),
               ),
@@ -283,7 +321,7 @@ class _ServiceCardState extends State<ServiceCard> {
               ),
             ),
 
-            if (images.length > 1)
+            if (mediaItems.length > 1)
               Positioned(
                 top: 24,
                 right: 24,

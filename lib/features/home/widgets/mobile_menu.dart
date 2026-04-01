@@ -219,10 +219,7 @@ class _MobileMenuState extends State<MobileMenu>
                                     }),
 
                                     const SizedBox(height: 40),
-                                    _buildFooterButton(
-                                      'book appointment',
-                                      false,
-                                    ),
+                                    _buildFooterButton('book appointment'),
                                     const SizedBox(height: 60),
                                     Row(
                                       mainAxisAlignment:
@@ -307,8 +304,8 @@ class _MobileMenuState extends State<MobileMenu>
                 filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
                 child: GestureDetector(
                   onTap: () {
-                    widget.onClose();
                     action();
+                    widget.onClose();
                   },
                   child: Container(
                     width:
@@ -363,7 +360,7 @@ class _MobileMenuState extends State<MobileMenu>
     );
   }
 
-  Widget _buildFooterButton(String text, bool inverse) {
+  Widget _buildFooterButton(String text) {
     return Center(
       child: FadeTransition(
         opacity: CurvedAnimation(
@@ -373,13 +370,12 @@ class _MobileMenuState extends State<MobileMenu>
         child: SizedBox(
           child: ElevatedButton(
             onPressed: () {
-              if (widget.onNavTap != null) {
-                widget.onNavTap!(text);
-              }
+              widget.onNavTap!(text);
+              widget.onClose();
             },
             style: ElevatedButton.styleFrom(
-              backgroundColor: inverse ? Colors.white : AppTheme.primaryGold,
-              foregroundColor: inverse ? AppTheme.primaryGold : Colors.white,
+              backgroundColor: AppTheme.primaryGold,
+              foregroundColor: Colors.white,
               padding: const EdgeInsets.symmetric(vertical: 22, horizontal: 18),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadiusGeometry.circular(18),

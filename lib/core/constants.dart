@@ -7,7 +7,6 @@ class AppConstants {
   // Replace with your Cloudinary Cloud Name if you want to use shortened paths
   static const String cloudName = "di6avgdw1";
   static const String galleryTag = "gallery";
-  static const String heroTag = "hero";
   static const String mainTag = "gallery";
   static const String cloudinaryBaseUrl =
       "https://res.cloudinary.com/$cloudName/image/upload/";
@@ -32,27 +31,15 @@ class AppConstants {
     'https://img.freepik.com/premium-photo/hairdresser-black-gloves-paints-brunette-woman-s-hair-beauty-salon_427957-3324.jpg',
   ];
 
-  // Placeholder for background video - Cloudinary/Firebase link goes here
-  static const String heroBackgroundVideo = "";
-
   // --- SERVICES DATA ---
   static const List<Map<String, dynamic>> services = [
-    {
-      'title': 'Braiding',
-      'folderKey': 'services/Braiding/images',
-      'img': [],
-      'video': '',
-    },
+    {'title': 'Braiding', 'folderKey': 'services/Braiding/images', 'img': []},
     {
       'title': 'Installation',
       'folderKey': 'services/Installation/images',
       'img': [],
     },
-    {
-      'title': 'Revamping',
-      'folderKey': 'services/Revamping/images',
-      'img': [],
-    },
+    {'title': 'Revamping', 'folderKey': 'services/Revamping/images', 'img': []},
     {
       'title': 'Ventilation',
       'folderKey': 'services/Ventilation/images',
@@ -60,34 +47,18 @@ class AppConstants {
     },
     {
       'title': 'Coloring/Bleaching',
-      'folderKey': 'services/Coloring/Bleaching/images',
+      'folderKey': 'services/Bleaching/images',
       'img': [],
     },
-    {
-      'title': 'Styling',
-      'folderKey': 'services/Styling/images',
-      'img': [],
-    },
+    {'title': 'Styling', 'folderKey': 'services/Styling/images', 'img': []},
     {
       'title': 'Wig making',
       'folderKey': 'services/Wig making/images',
       'img': [],
     },
-    {
-      'title': 'Makeup',
-      'folderKey': 'services/Makeup/images',
-      'img': [],
-    },
-    {
-      'title': 'Pedicure',
-      'folderKey': 'services/Pedicure/images',
-      'img': [],
-    },
-    {
-      'title': 'Manicure',
-      'folderKey': 'services/Manicure/images',
-      'img': [],
-    },
+    {'title': 'Makeup', 'folderKey': 'services/Makeup/images', 'img': []},
+    {'title': 'Pedicure', 'folderKey': 'services/Pedicure/images', 'img': []},
+    {'title': 'Manicure', 'folderKey': 'services/Manicure/images', 'img': []},
   ];
 
   // --- PRODUCTS DATA ---

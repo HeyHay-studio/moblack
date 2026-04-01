@@ -31,7 +31,7 @@ class _HomePageState extends State<HomePage> {
 
   // Dynamic Data
   List<CloudinaryResource> _allResources = [];
-  Map<String, List<String>> _groupedResources = {};
+  Map<String, List<CloudinaryResource>> _groupedResources = {};
   bool _isLoading = true;
 
   @override
@@ -82,6 +82,7 @@ class _HomePageState extends State<HomePage> {
     if (targetKey?.currentContext != null) {
       Scrollable.ensureVisible(
         targetKey!.currentContext!,
+        alignment: targetKey == galleryKey || targetKey == bookingKey ? 0 : 0.5,
         duration: const Duration(milliseconds: 1000),
         curve: Curves.linearToEaseOut,
       );
@@ -97,10 +98,13 @@ class _HomePageState extends State<HomePage> {
   List<Map<String, dynamic>> _getDynamicServices() {
     return AppConstants.services.map((service) {
       final folderKey = service['folderKey'];
-      final dynamicImages = _groupedResources[folderKey] ?? [];
+      final dynamicMedia = _groupedResources[folderKey] ?? [];
       return {
         ...service,
-        'img': dynamicImages.isNotEmpty ? dynamicImages : service['img'],
+        'media': dynamicMedia.isNotEmpty ? dynamicMedia : [],
+        'img': dynamicMedia.isNotEmpty
+            ? dynamicMedia.map((r) => r.url).toList()
+            : service['img'],
       };
     }).toList();
   }
@@ -129,7 +133,9 @@ class _HomePageState extends State<HomePage> {
     final dynamicServices = _getDynamicServices();
     final galleryImages = _getGalleryImages();
     final productImages =
-        _groupedResources[AppConstants.productFolderKey] ?? [];
+        (_groupedResources[AppConstants.productFolderKey] ?? [])
+            .map((r) => r.url)
+            .toList();
 
     return Scaffold(
       backgroundColor: AppTheme.backgroundBlack,
@@ -143,10 +149,11 @@ class _HomePageState extends State<HomePage> {
                   key: heroKey,
                   isDesktop: isDesktop,
                   allResources: _allResources,
+                  onNavTap: scrollToSection,
                 ),
                 ServicesSection(
                   isDesktop: isDesktop,
-                  dynamicServices: dynamicServices,
+                  dynamicServices: List.from(dynamicServices)..shuffle(),
                 ),
                 ProductsSection(
                   key: productKey,

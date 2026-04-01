@@ -13,8 +13,14 @@ import 'hero_video_background.dart';
 class HeroSection extends StatefulWidget {
   final bool isDesktop;
   final List<CloudinaryResource>? allResources;
+  final Function(String)? onNavTap;
 
-  const HeroSection({super.key, required this.isDesktop, this.allResources});
+  const HeroSection({
+    super.key,
+    required this.isDesktop,
+    this.allResources,
+    this.onNavTap,
+  });
 
   @override
   State<HeroSection> createState() => _HeroSectionState();
@@ -47,22 +53,20 @@ class _HeroSectionState extends State<HeroSection> {
   }
 
   void _processResources(List<CloudinaryResource> assets) {
-    // Separate videos and images
-    final videos =
-        assets
-            .where((r) => r.type == CloudinaryResourceType.video)
-            .take(6)
-            .toList()
-          ..shuffle();
-    final images =
-        assets
-            .where((r) => r.type == CloudinaryResourceType.image)
-            .take(6)
-            .toList()
-          ..shuffle();
+    final videos = assets
+        .where((r) => r.type == CloudinaryResourceType.video)
+        .toList()
+      ..shuffle();
+    final selectedVideos = videos.take(6).toList();
+
+    final images = assets
+        .where((r) => r.type == CloudinaryResourceType.image)
+        .toList()
+      ..shuffle();
+    final selectedImages = images.take(6).toList();
 
     // Priority: Videos first, then random images
-    final combined = [...videos, ...images]..shuffle();
+    final combined = [...selectedVideos, ...selectedImages]..shuffle();
 
     if (mounted) {
       setState(() {
@@ -77,7 +81,7 @@ class _HeroSectionState extends State<HeroSection> {
 
   Future<void> _fetchAssets() async {
     final assets = await CloudinaryService.fetchMixedAssetsByTag(
-      AppConstants.heroTag,
+      AppConstants.mainTag,
     );
     _processResources(assets);
     log('Hero assets fetched manually: ${assets.isNotEmpty}');
@@ -264,7 +268,9 @@ class _HeroSectionState extends State<HeroSection> {
           ),
           SizedBox(height: widget.isDesktop ? 48 : 24),
           ElevatedButton(
-            onPressed: () {},
+            onPressed: () {
+              widget.onNavTap!("book appointment");
+            },
             style: ElevatedButton.styleFrom(
               backgroundColor: AppTheme.primaryGold,
               foregroundColor: Colors.white,
@@ -295,52 +301,57 @@ class _HeroSectionState extends State<HeroSection> {
     return ClipRRect(
       child: BackdropFilter.grouped(
         filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
-        child: Container(
-          padding: const EdgeInsets.all(20),
-          decoration: BoxDecoration(
-            color: Colors.white.withValues(alpha: 0.1),
-            border: Border.all(color: Colors.white.withValues(alpha: 0.2)),
-            borderRadius: BorderRadius.circular(24),
-          ),
-          child: Column(
-            children: [
-              Text(
-                subtitle.toUpperCase(),
-                style: const TextStyle(
-                  color: Colors.white60,
-                  fontSize: 10,
-                  letterSpacing: 2,
+        child: GestureDetector(
+          onTap: () {
+            widget.onNavTap!("products");
+          },
+          child: Container(
+            padding: const EdgeInsets.all(20),
+            decoration: BoxDecoration(
+              color: Colors.white.withValues(alpha: 0.1),
+              border: Border.all(color: Colors.white.withValues(alpha: 0.2)),
+              borderRadius: BorderRadius.circular(24),
+            ),
+            child: Column(
+              children: [
+                Text(
+                  subtitle.toUpperCase(),
+                  style: const TextStyle(
+                    color: Colors.white60,
+                    fontSize: 10,
+                    letterSpacing: 2,
+                  ),
                 ),
-              ),
-              const SizedBox(height: 8),
-              Row(
-                mainAxisSize: .min,
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    title,
-                    style: const TextStyle(
-                      color: Colors.white,
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
+                const SizedBox(height: 8),
+                Row(
+                  mainAxisSize: .min,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      title,
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
-                  ),
-                  SizedBox(width: 20),
-                  Container(
-                    padding: const EdgeInsets.all(4),
-                    decoration: BoxDecoration(
-                      color: Colors.white.withValues(alpha: 0.2),
-                      shape: BoxShape.circle,
+                    SizedBox(width: 20),
+                    Container(
+                      padding: const EdgeInsets.all(4),
+                      decoration: BoxDecoration(
+                        color: Colors.white.withValues(alpha: 0.2),
+                        shape: BoxShape.circle,
+                      ),
+                      child: const Icon(
+                        Icons.arrow_right_alt,
+                        color: Colors.white,
+                        size: 16,
+                      ),
                     ),
-                    child: const Icon(
-                      Icons.arrow_right_alt,
-                      color: Colors.white,
-                      size: 16,
-                    ),
-                  ),
-                ],
-              ),
-            ],
+                  ],
+                ),
+              ],
+            ),
           ),
         ),
       ),
