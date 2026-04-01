@@ -51,18 +51,18 @@ class _HeroSectionState extends State<HeroSection> {
     final videos =
         assets
             .where((r) => r.type == CloudinaryResourceType.video)
-            .take(4)
+            .take(6)
             .toList()
           ..shuffle();
     final images =
         assets
             .where((r) => r.type == CloudinaryResourceType.image)
-            .take(4)
+            .take(6)
             .toList()
           ..shuffle();
 
     // Priority: Videos first, then random images
-    final combined = [...videos, ...images];
+    final combined = [...videos, ...images]..shuffle();
 
     if (mounted) {
       setState(() {
@@ -186,7 +186,6 @@ class _HeroSectionState extends State<HeroSection> {
             ),
           ),
 
-          // Dark/Pink Gradient Overlay for legibility and branding
           Container(
             decoration: BoxDecoration(
               gradient: LinearGradient(
@@ -284,27 +283,18 @@ class _HeroSectionState extends State<HeroSection> {
             ),
           ),
           SizedBox(height: widget.isDesktop ? 48 : 24),
-          Wrap(
-            spacing: 16,
-            runSpacing: 16,
-            alignment: widget.isDesktop
-                ? WrapAlignment.start
-                : WrapAlignment.center,
-            children: [
-              _buildStatCard('New Arrivals', 'Products'),
-              _buildStatCard('Only Today', '50% OFF'),
-            ],
-          ),
+          _buildStatCard('New Arrivals', 'Products'),
           if (!widget.isDesktop) const SizedBox(height: 40),
         ],
       ),
     );
   }
 
+  //Todo: have to clear the box shadow around the card
   Widget _buildStatCard(String subtitle, String title) {
     return ClipRRect(
       child: BackdropFilter.grouped(
-        filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+        filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
         child: Container(
           padding: const EdgeInsets.all(20),
           decoration: BoxDecoration(

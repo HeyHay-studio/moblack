@@ -203,7 +203,6 @@ class _MobileMenuState extends State<MobileMenu>
                                         index,
                                         navLinks.length,
                                         () {
-                                          widget.onClose();
                                           if (label == 'Services') {
                                             Navigator.push(
                                               context,
@@ -224,9 +223,7 @@ class _MobileMenuState extends State<MobileMenu>
                                       'book appointment',
                                       false,
                                     ),
-                                    const SizedBox(height: 20),
-                                    _buildFooterButton('contact us', true),
-                                    const SizedBox(height: 20),
+                                    const SizedBox(height: 60),
                                     Row(
                                       mainAxisAlignment:
                                           MainAxisAlignment.spaceBetween,
@@ -234,7 +231,7 @@ class _MobileMenuState extends State<MobileMenu>
                                         Text(
                                           'Follow us:',
                                           style: GoogleFonts.aboreto(
-                                            color: Colors.white,
+                                            color: Colors.white60,
                                             fontSize: 12,
                                             fontWeight: FontWeight.bold,
                                             letterSpacing: 2,
@@ -375,7 +372,11 @@ class _MobileMenuState extends State<MobileMenu>
         ),
         child: SizedBox(
           child: ElevatedButton(
-            onPressed: () {},
+            onPressed: () {
+              if (widget.onNavTap != null) {
+                widget.onNavTap!(text);
+              }
+            },
             style: ElevatedButton.styleFrom(
               backgroundColor: inverse ? Colors.white : AppTheme.primaryGold,
               foregroundColor: inverse ? AppTheme.primaryGold : Colors.white,

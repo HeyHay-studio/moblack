@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:video_player/video_player.dart';
+
 import '../../../../core/theme.dart';
 
 class HeroVideoBackground extends StatefulWidget {
@@ -20,7 +21,7 @@ class _HeroVideoBackgroundState extends State<HeroVideoBackground> {
     super.initState();
     _controller = VideoPlayerController.networkUrl(Uri.parse(widget.url))
       ..setLooping(true)
-      ..setVolume(0.0) // Always muted for background
+      ..setVolume(0.0)
       ..initialize().then((_) {
         if (mounted) {
           setState(() {

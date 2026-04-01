@@ -24,8 +24,9 @@ class _HomePageState extends State<HomePage> {
   final ScrollController scrollController = ScrollController();
 
   final GlobalKey heroKey = GlobalKey();
-  final GlobalKey servicesKey = GlobalKey();
+  final GlobalKey productKey = GlobalKey();
   final GlobalKey bookingKey = GlobalKey();
+  final GlobalKey aboutKey = GlobalKey();
   final GlobalKey galleryKey = GlobalKey();
 
   // Dynamic Data
@@ -64,14 +65,17 @@ class _HomePageState extends State<HomePage> {
       case 'home':
         targetKey = heroKey;
         break;
-      case 'services':
-        targetKey = servicesKey;
+      case 'products':
+        targetKey = productKey;
         break;
-      case 'booking':
+      case 'book appointment':
         targetKey = bookingKey;
         break;
       case 'gallery':
         targetKey = galleryKey;
+        break;
+      case 'about':
+        targetKey = aboutKey;
         break;
     }
 
@@ -79,7 +83,7 @@ class _HomePageState extends State<HomePage> {
       Scrollable.ensureVisible(
         targetKey!.currentContext!,
         duration: const Duration(milliseconds: 1000),
-        curve: Curves.easeInOutCubic,
+        curve: Curves.linearToEaseOut,
       );
     }
   }
@@ -141,22 +145,21 @@ class _HomePageState extends State<HomePage> {
                   allResources: _allResources,
                 ),
                 ServicesSection(
-                  key: servicesKey,
                   isDesktop: isDesktop,
                   dynamicServices: dynamicServices,
                 ),
-                if (productImages.isNotEmpty)
-                  ProductsSection(
-                    isDesktop: isDesktop,
-                    productImages: productImages,
-                  ),
+                ProductsSection(
+                  key: productKey,
+                  isDesktop: isDesktop,
+                  productImages: productImages,
+                ),
                 BookingSection(key: bookingKey, isDesktop: isDesktop),
                 GallerySection(
                   key: galleryKey,
                   isDesktop: isDesktop,
                   dynamicImages: galleryImages,
                 ),
-                FooterSection(isDesktop: isDesktop),
+                FooterSection(key: aboutKey, isDesktop: isDesktop),
               ],
             ),
           ),

@@ -5,7 +5,6 @@ import 'package:google_fonts/google_fonts.dart';
 
 import '../../../core/constants.dart';
 import '../../../core/services/pages/services_page.dart';
-import '../../../core/theme.dart';
 
 class TopNavigation extends StatelessWidget {
   final bool isDesktop;
@@ -70,7 +69,7 @@ class TopNavigation extends StatelessWidget {
                 ),
 
                 if (isDesktop) _buildDesktopNav(context),
-                _buildActionArea(),
+                if (!isDesktop) _buildActionArea(),
               ],
             ),
           ),
@@ -81,67 +80,45 @@ class TopNavigation extends StatelessWidget {
 
   Widget _buildDesktopNav(BuildContext context) {
     return Row(
-      children: AppConstants.navLinks
-          .map(
-            (link) => GestureDetector(
-              onTap: () {
-                if (link == 'Services') {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => const ServicesPage(),
-                    ),
-                  );
-                } else if (onNavTap != null) {
-                  onNavTap!(link);
-                }
-              },
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 20),
-                child: MouseRegion(
-                  cursor: SystemMouseCursors.click,
-                  child: Text(
-                    link.toUpperCase(),
-                    style: const TextStyle(
-                      color: Colors.white,
-                      fontSize: 13,
-                      fontWeight: FontWeight.w600,
-                      letterSpacing: 1.2,
+      children:
+          AppConstants.navLinks
+              .map(
+                (link) => GestureDetector(
+                  onTap: () {
+                    if (link == 'Services') {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const ServicesPage(),
+                        ),
+                      );
+                    } else if (onNavTap != null) {
+                      onNavTap!(link);
+                    }
+                  },
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 20),
+                    child: MouseRegion(
+                      cursor: SystemMouseCursors.click,
+                      child: Text(
+                        link.toUpperCase(),
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 13,
+                          fontWeight: FontWeight.w600,
+                          letterSpacing: 1.2,
+                        ),
+                      ),
                     ),
                   ),
                 ),
-              ),
-            ),
-          )
-          .toList(),
+              )
+              .toList()
+            ..shuffle(),
     );
   }
 
   Widget _buildActionArea() {
-    if (isDesktop) {
-      return ElevatedButton(
-        onPressed: () {},
-        style: ElevatedButton.styleFrom(
-          backgroundColor: AppTheme.primaryGold,
-          foregroundColor: Colors.white,
-          padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 18),
-          elevation: 5,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(12),
-          ),
-        ),
-        child: const Text(
-          'CONTACT US',
-          style: TextStyle(
-            fontSize: 12,
-            fontWeight: FontWeight.w800,
-            letterSpacing: 1,
-          ),
-        ),
-      );
-    }
-
-    // MOBILE MENU ICON
     return IconButton(
       onPressed: onMenuToggle,
       hoverColor: Colors.white10,

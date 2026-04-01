@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:developer';
 
 import 'package:http/http.dart' as http;
 
@@ -73,16 +74,19 @@ class CloudinaryService {
         // 404 means no assets have this tag yet; treat as empty list
         return [];
       } else if (response.statusCode == 403) {
-        print(
-          'Cloudinary Access Denied (403): Please ensure your Cloudinary "Resource list" setting is ENABLED (Unchecked) in Settings > Security.',
+        debugger(
+          message:
+              'Cloudinary Access Denied (403): Please ensure your Cloudinary'
+              ' "Resource list" setting is ENABLED (Unchecked) in Settings > Security.',
         );
       } else {
-        print(
-          'Cloudinary API Error (${response.statusCode}): ${response.body}',
+        debugger(
+          message:
+              'Cloudinary API Error (${response.statusCode}): ${response.body}',
         );
       }
     } catch (e) {
-      print('Cloudinary Fetch Error ($typeStr): $e');
+      debugger(message: 'Cloudinary Fetch Error ($typeStr): $e');
     }
     return [];
   }
