@@ -5,6 +5,7 @@ import 'package:google_fonts/google_fonts.dart';
 
 import '../../../../core/theme.dart';
 import '../../../core/services/cloudinary_service.dart';
+import '../../products/products_page.dart';
 import 'video_provider_widget.dart';
 
 class ProductsSection extends StatelessWidget {
@@ -26,54 +27,82 @@ class ProductsSection extends StatelessWidget {
       decoration: BoxDecoration(color: Colors.white.withValues(alpha: 0.03)),
       child: Column(
         children: [
-          Center(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 24),
-              child: Column(
-                children: [
-                  Text(
-                    'Luxury Products',
-                    style: GoogleFonts.playfairDisplay(
-                      fontSize: isDesktop ? 40 : 32,
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold,
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 80),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 24),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Featured Products',
+                        style: GoogleFonts.playfairDisplay(
+                          fontSize: 40,
+                          color: Colors.white,
+                        ),
+                      ),
+                      const SizedBox(height: 16),
+                      const Text(
+                        'Handpicked excellence. Discover our signature collections.',
+                        style: TextStyle(color: Colors.grey, fontSize: 16),
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(height: 48),
+                SizedBox(
+                  height: 400,
+                  child: ScrollConfiguration(
+                    behavior: ScrollConfiguration.of(context).copyWith(
+                      dragDevices: {
+                        PointerDeviceKind.touch,
+                        PointerDeviceKind.mouse,
+                        PointerDeviceKind.trackpad,
+                      },
+                    ),
+                    child: ListView.separated(
+                      padding: const EdgeInsets.symmetric(horizontal: 24),
+                      scrollDirection: Axis.horizontal,
+                      physics: const BouncingScrollPhysics(),
+                      itemCount: productMedia.take(8).length,
+                      separatorBuilder: (context, index) =>
+                          const SizedBox(width: 20),
+                      itemBuilder: (context, index) {
+                        return _ProductCard(resource: productMedia[index]);
+                      },
                     ),
                   ),
-                  const SizedBox(height: 8),
-                  Text(
-                    'Premium hairs\nand\naccessories for your beauty',
-                    textAlign: TextAlign.center,
-                    style: GoogleFonts.aboreto(
+                ),
+                const SizedBox(height: 40),
+                Center(
+                  child: TextButton.icon(
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) =>
+                              ProductsPage(productMedia: productMedia),
+                        ),
+                      );
+                    },
+                    icon: const Text(
+                      'VIEW ALL REELS & PRODUCTS',
+                      style: TextStyle(
+                        color: AppTheme.primaryGold,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    label: const Icon(
+                      Icons.arrow_forward,
                       color: AppTheme.primaryGold,
-                      fontSize: 12,
-                      letterSpacing: 2,
+                      size: 18,
                     ),
                   ),
-                ],
-              ),
-            ),
-          ),
-          const SizedBox(height: 48),
-          SizedBox(
-            height: 400,
-            child: ScrollConfiguration(
-              behavior: ScrollConfiguration.of(context).copyWith(
-                dragDevices: {
-                  PointerDeviceKind.touch,
-                  PointerDeviceKind.mouse,
-                  PointerDeviceKind.trackpad,
-                },
-              ),
-              child: ListView.separated(
-                padding: const EdgeInsets.symmetric(horizontal: 24),
-                scrollDirection: Axis.horizontal,
-                physics: const BouncingScrollPhysics(),
-                itemCount: productMedia.length,
-                separatorBuilder: (context, index) => const SizedBox(width: 20),
-                itemBuilder: (context, index) {
-                  return _ProductCard(resource: productMedia[index]);
-                },
-              ),
+                ),
+              ],
             ),
           ),
         ],

@@ -8,6 +8,7 @@ import 'package:moblack/core/theme.dart';
 
 import '../../../core/services/communication_service.dart';
 import '../../../core/services/pages/services_page.dart';
+import '../../products/products_page.dart';
 import '../../widgets/fav_icon.dart';
 
 class MobileMenu extends StatefulWidget {
@@ -209,6 +210,14 @@ class _MobileMenuState extends State<MobileMenu>
                                               MaterialPageRoute(
                                                 builder: (context) =>
                                                     const ServicesPage(),
+                                              ),
+                                            );
+                                          } else if (label == 'Products') {
+                                            Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                builder: (context) =>
+                                                    const ProductsPage(),
                                               ),
                                             );
                                           } else if (widget.onNavTap != null) {

@@ -5,6 +5,7 @@ import 'package:google_fonts/google_fonts.dart';
 
 import '../../../core/constants.dart';
 import '../../../core/services/pages/services_page.dart';
+import '../../products/products_page.dart';
 
 class TopNavigation extends StatelessWidget {
   final bool isDesktop;
@@ -92,6 +93,13 @@ class TopNavigation extends StatelessWidget {
                           builder: (context) => const ServicesPage(),
                         ),
                       );
+                    } else if (link == 'Products') {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const ProductsPage(),
+                        ),
+                      );
                     } else if (onNavTap != null) {
                       onNavTap!(link);
                     }
@@ -113,8 +121,7 @@ class TopNavigation extends StatelessWidget {
                   ),
                 ),
               )
-              .toList()
-            ..shuffle(),
+              .toList(),
     );
   }
 

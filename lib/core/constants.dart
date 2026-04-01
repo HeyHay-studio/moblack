@@ -1,4 +1,14 @@
 class AppConstants {
+  // --- HELPERS ---
+  static String getWhatsAppBuyUrl(String publicId, String imageUrl) {
+    final message = "Hello Moblack, I'm interested in this product:\n"
+        "ID: $publicId\n"
+        "Link: $imageUrl\n"
+        "Is it available?";
+    final encodedMessage = Uri.encodeComponent(message);
+    return "https://wa.me/$phoneNum?text=$encodedMessage";
+  }
+
   // --- CONTACT INFO ---
   static const String phoneNum = '+233555207062';
   static const String gmail = 'beautybymoblack@gmail.com';
