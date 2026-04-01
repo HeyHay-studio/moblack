@@ -174,7 +174,11 @@ class __GalleryItemState extends State<_GalleryItem> {
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 400),
         curve: Curves.easeOutCubic,
-        transform: Matrix4.identity()..scale(_isHovered ? 1.05 : 1.0),
+        transform: Matrix4.diagonal3Values(
+          _isHovered ? 1.05 : 1.0,
+          _isHovered ? 1.05 : 1.0,
+          1.0,
+        ),
         child: ClipRRect(
           borderRadius: BorderRadius.circular(20),
           child: Stack(

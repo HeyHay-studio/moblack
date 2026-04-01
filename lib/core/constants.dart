@@ -33,32 +33,66 @@ class AppConstants {
 
   // --- SERVICES DATA ---
   static const List<Map<String, dynamic>> services = [
-    {'title': 'Braiding', 'folderKey': 'services/Braiding/images', 'img': []},
+    {
+      'title': 'Braiding',
+      'folderKey': 'services/Braiding/images',
+      'videoFolderKey': 'services/Braiding/videos',
+      'img': [],
+    },
     {
       'title': 'Installation',
       'folderKey': 'services/Installation/images',
+      'videoFolderKey': 'services/Installation/videos',
       'img': [],
     },
-    {'title': 'Revamping', 'folderKey': 'services/Revamping/images', 'img': []},
+    {
+      'title': 'Revamping',
+      'folderKey': 'services/Revamping/images',
+      'videoFolderKey': 'services/Revamping/videos',
+      'img': [],
+    },
     {
       'title': 'Ventilation',
       'folderKey': 'services/Ventilation/images',
+      'videoFolderKey': 'services/Ventilation/videos',
       'img': [],
     },
     {
       'title': 'Coloring/Bleaching',
       'folderKey': 'services/Bleaching/images',
+      'videoFolderKey': 'services/Bleaching/videos',
       'img': [],
     },
-    {'title': 'Styling', 'folderKey': 'services/Styling/images', 'img': []},
+    {
+      'title': 'Styling',
+      'folderKey': 'services/Styling/images',
+      'videoFolderKey': 'services/Styling/videos',
+      'img': [],
+    },
     {
       'title': 'Wig making',
       'folderKey': 'services/Wig making/images',
+      'videoFolderKey': 'services/Wig making/videos',
       'img': [],
     },
-    {'title': 'Makeup', 'folderKey': 'services/Makeup/images', 'img': []},
-    {'title': 'Pedicure', 'folderKey': 'services/Pedicure/images', 'img': []},
-    {'title': 'Manicure', 'folderKey': 'services/Manicure/images', 'img': []},
+    {
+      'title': 'Makeup',
+      'folderKey': 'services/Makeup/images',
+      'videoFolderKey': 'services/Makeup/videos',
+      'img': [],
+    },
+    {
+      'title': 'Pedicure',
+      'folderKey': 'services/Pedicure/images',
+      'videoFolderKey': 'services/Pedicure/videos',
+      'img': [],
+    },
+    {
+      'title': 'Manicure',
+      'folderKey': 'services/Manicure/images',
+      'videoFolderKey': 'services/Manicure/videos',
+      'img': [],
+    },
   ];
 
   // --- PRODUCTS DATA ---

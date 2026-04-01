@@ -121,8 +121,14 @@ class _HomePageState extends State<HomePage> {
 
   List<Map<String, dynamic>> _getDynamicServices() {
     return AppConstants.services.map((service) {
-      final folderKey = service['folderKey'];
-      final dynamicMedia = _groupedResources[folderKey] ?? [];
+      final imgFolder = service['folderKey'];
+      final videoFolder = service['videoFolderKey'];
+      
+      final images = _groupedResources[imgFolder] ?? [];
+      final videos = _groupedResources[videoFolder] ?? [];
+      
+      final dynamicMedia = [...images, ...videos];
+
       return {
         ...service,
         'media': dynamicMedia.isNotEmpty ? dynamicMedia : [],
@@ -145,15 +151,13 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     bool isDesktop = MediaQuery.of(context).size.width >= 1024;
 
-    // We no longer block the whole app with _isLoading.
-    // Instead, sections handle their own loading states or fallbacks.
-
     final dynamicServices = _getDynamicServices();
     final galleryImages = _getGalleryImages();
-    
-    // --- PRODUCT MEDIA (Mergine Images and Videos) ---
-    final productImages = _groupedResources[AppConstants.productFolderKey] ?? [];
-    final productVideos = _groupedResources[AppConstants.productVideoFolderKey] ?? [];
+
+    final productImages =
+        _groupedResources[AppConstants.productFolderKey] ?? [];
+    final productVideos =
+        _groupedResources[AppConstants.productVideoFolderKey] ?? [];
     final productMedia = [...productImages, ...productVideos]..shuffle();
 
     return Scaffold(
