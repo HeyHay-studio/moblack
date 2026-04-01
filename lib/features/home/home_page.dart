@@ -33,6 +33,7 @@ class _HomePageState extends State<HomePage> {
   List<CloudinaryResource> _allResources = [];
   Map<String, List<CloudinaryResource>> _groupedResources = {};
   bool _isLoading = true;
+  bool _hasError = false;
 
   @override
   void initState() {
@@ -41,15 +42,38 @@ class _HomePageState extends State<HomePage> {
   }
 
   Future<void> _fetchMasterData() async {
-    final assets = await CloudinaryService.fetchMixedAssetsByTag(
-      AppConstants.mainTag,
-    );
-    if (mounted) {
-      setState(() {
-        _allResources = assets;
-        _groupedResources = CloudinaryService.groupByFolder(assets);
-        _isLoading = false;
-      });
+    setState(() {
+      _isLoading = true;
+      _hasError = false;
+    });
+
+    try {
+      final assets = await CloudinaryService.fetchMixedAssetsByTag(
+        AppConstants.mainTag,
+      );
+
+      if (assets.isEmpty) {
+        // If assets are empty, check if it was a failure or just no data
+        // For simplicity, we treat empty as a potential connection issue if it's the first run
+        // but we'll only trigger error if we actually caught an exception in the service (which we log)
+      }
+
+      if (mounted) {
+        setState(() {
+          _allResources = assets;
+          _groupedResources = CloudinaryService.groupByFolder(assets);
+          _isLoading = false;
+          _hasError =
+              assets.isEmpty; // Consider empty as error for first run recovery
+        });
+      }
+    } catch (e) {
+      if (mounted) {
+        setState(() {
+          _isLoading = false;
+          _hasError = true;
+        });
+      }
     }
   }
 
@@ -121,21 +145,16 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     bool isDesktop = MediaQuery.of(context).size.width >= 1024;
 
-    if (_isLoading) {
-      return const Scaffold(
-        backgroundColor: AppTheme.backgroundBlack,
-        body: Center(
-          child: CircularProgressIndicator(color: AppTheme.primaryGold),
-        ),
-      );
-    }
+    // We no longer block the whole app with _isLoading.
+    // Instead, sections handle their own loading states or fallbacks.
 
     final dynamicServices = _getDynamicServices();
     final galleryImages = _getGalleryImages();
-    final productImages =
-        (_groupedResources[AppConstants.productFolderKey] ?? [])
-            .map((r) => r.url)
-            .toList();
+    
+    // --- PRODUCT MEDIA (Mergine Images and Videos) ---
+    final productImages = _groupedResources[AppConstants.productFolderKey] ?? [];
+    final productVideos = _groupedResources[AppConstants.productVideoFolderKey] ?? [];
+    final productMedia = [...productImages, ...productVideos]..shuffle();
 
     return Scaffold(
       backgroundColor: AppTheme.backgroundBlack,
@@ -158,7 +177,7 @@ class _HomePageState extends State<HomePage> {
                 ProductsSection(
                   key: productKey,
                   isDesktop: isDesktop,
-                  productImages: productImages,
+                  productMedia: productMedia,
                 ),
                 BookingSection(key: bookingKey, isDesktop: isDesktop),
                 GallerySection(
@@ -182,6 +201,83 @@ class _HomePageState extends State<HomePage> {
               onClose: toggleMenu,
               onNavTap: scrollToSection,
             ),
+
+          // --- ERROR & RETRY OVERLAY ---
+          if (_hasError)
+            Positioned(
+              bottom: 24,
+              left: 24,
+              right: 24,
+              child: _buildErrorBanner(),
+            ),
+
+          // --- LOADING INDICATOR (DISCRETE) ---
+          if (_isLoading && _allResources.isEmpty)
+            const Positioned(
+              top: 100,
+              left: 0,
+              right: 0,
+              child: Center(
+                child: CircularProgressIndicator(
+                  color: AppTheme.primaryGold,
+                  strokeWidth: 2,
+                ),
+              ),
+            ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildErrorBanner() {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+      decoration: BoxDecoration(
+        color: const Color(0xFF1A1A1A),
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(color: AppTheme.primaryGold.withValues(alpha: 0.3)),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.5),
+            blurRadius: 20,
+            offset: const Offset(0, 10),
+          ),
+        ],
+      ),
+      child: Row(
+        children: [
+          const Icon(Icons.cloud_off, color: AppTheme.primaryGold),
+          const SizedBox(width: 16),
+          const Expanded(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'Connection Issues',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                Text(
+                  'Unable to load latest media. Using fallbacks.',
+                  style: TextStyle(color: Colors.white60, fontSize: 12),
+                ),
+              ],
+            ),
+          ),
+          TextButton(
+            onPressed: _fetchMasterData,
+            style: TextButton.styleFrom(
+              foregroundColor: AppTheme.primaryGold,
+              backgroundColor: AppTheme.primaryGold.withValues(alpha: 0.1),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(30),
+              ),
+            ),
+            child: const Text('RETRY'),
+          ),
         ],
       ),
     );

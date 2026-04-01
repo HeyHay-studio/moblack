@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:developer';
+import 'dart:io';
 
 import 'package:http/http.dart' as http;
 
@@ -85,8 +86,12 @@ class CloudinaryService {
               'Cloudinary API Error (${response.statusCode}): ${response.body}',
         );
       }
+    } on HandshakeException catch (e) {
+      log('Cloudinary Handshake Error ($typeStr): $e');
+    } on SocketException catch (e) {
+      log('Cloudinary Network Connection Error ($typeStr): $e');
     } catch (e) {
-      debugger(message: 'Cloudinary Fetch Error ($typeStr): $e');
+      log('Cloudinary General Error ($typeStr): $e');
     }
     return [];
   }

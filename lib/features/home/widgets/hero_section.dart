@@ -39,6 +39,8 @@ class _HeroSectionState extends State<HeroSection> {
     if (widget.allResources != null && widget.allResources!.isNotEmpty) {
       _processResources(widget.allResources!);
     } else {
+      _heroResources = _getFallbackResources();
+      _isLoading = false;
       _fetchAssets();
     }
   }
@@ -53,16 +55,14 @@ class _HeroSectionState extends State<HeroSection> {
   }
 
   void _processResources(List<CloudinaryResource> assets) {
-    final videos = assets
-        .where((r) => r.type == CloudinaryResourceType.video)
-        .toList()
-      ..shuffle();
+    final videos =
+        assets.where((r) => r.type == CloudinaryResourceType.video).toList()
+          ..shuffle();
     final selectedVideos = videos.take(6).toList();
 
-    final images = assets
-        .where((r) => r.type == CloudinaryResourceType.image)
-        .toList()
-      ..shuffle();
+    final images =
+        assets.where((r) => r.type == CloudinaryResourceType.image).toList()
+          ..shuffle();
     final selectedImages = images.take(6).toList();
 
     // Priority: Videos first, then random images
@@ -131,15 +131,7 @@ class _HeroSectionState extends State<HeroSection> {
     final height = MediaQuery.heightOf(context);
     final width = MediaQuery.widthOf(context);
 
-    if (_isLoading) {
-      return Container(
-        height: height,
-        color: AppTheme.backgroundBlack,
-        child: const Center(
-          child: CircularProgressIndicator(color: AppTheme.primaryGold),
-        ),
-      );
-    }
+    // Progressive loading: fallback is shown immediately by initState
 
     return SizedBox(
       height: widget.isDesktop ? height : (height <= width ? width : height),

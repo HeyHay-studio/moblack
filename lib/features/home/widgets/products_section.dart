@@ -1,21 +1,25 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../../../../core/theme.dart';
+import '../../../core/services/cloudinary_service.dart';
+import 'video_provider_widget.dart';
 
 class ProductsSection extends StatelessWidget {
   final bool isDesktop;
-  final List<String> productImages;
+  final List<CloudinaryResource> productMedia;
 
   const ProductsSection({
     super.key,
     required this.isDesktop,
-    required this.productImages,
+    required this.productMedia,
   });
 
   @override
   Widget build(BuildContext context) {
-    if (productImages.isEmpty) return const SizedBox.shrink();
+    if (productMedia.isEmpty) return const SizedBox.shrink();
 
     return Container(
       padding: const EdgeInsets.symmetric(vertical: 80),
@@ -52,15 +56,24 @@ class ProductsSection extends StatelessWidget {
           const SizedBox(height: 48),
           SizedBox(
             height: 400,
-            child: ListView.separated(
-              padding: const EdgeInsets.symmetric(horizontal: 24),
-              scrollDirection: Axis.horizontal,
-              physics: const BouncingScrollPhysics(),
-              itemCount: productImages.length,
-              separatorBuilder: (context, index) => const SizedBox(width: 20),
-              itemBuilder: (context, index) {
-                return _ProductCard(imageUrl: productImages[index]);
-              },
+            child: ScrollConfiguration(
+              behavior: ScrollConfiguration.of(context).copyWith(
+                dragDevices: {
+                  PointerDeviceKind.touch,
+                  PointerDeviceKind.mouse,
+                  PointerDeviceKind.trackpad,
+                },
+              ),
+              child: ListView.separated(
+                padding: const EdgeInsets.symmetric(horizontal: 24),
+                scrollDirection: Axis.horizontal,
+                physics: const BouncingScrollPhysics(),
+                itemCount: productMedia.length,
+                separatorBuilder: (context, index) => const SizedBox(width: 20),
+                itemBuilder: (context, index) {
+                  return _ProductCard(resource: productMedia[index]);
+                },
+              ),
             ),
           ),
         ],
@@ -70,9 +83,9 @@ class ProductsSection extends StatelessWidget {
 }
 
 class _ProductCard extends StatefulWidget {
-  final String imageUrl;
+  final CloudinaryResource resource;
 
-  const _ProductCard({required this.imageUrl});
+  const _ProductCard({required this.resource});
 
   @override
   State<_ProductCard> createState() => __ProductCardState();
@@ -101,7 +114,10 @@ class __ProductCardState extends State<_ProductCard> {
           child: Stack(
             fit: StackFit.expand,
             children: [
-              Image.network(widget.imageUrl, fit: BoxFit.cover),
+              if (widget.resource.type == CloudinaryResourceType.video)
+                VideoProviderWidget(videoUrl: widget.resource.url)
+              else
+                Image.network(widget.resource.url, fit: BoxFit.cover),
               Positioned(
                 bottom: 0,
                 left: 0,

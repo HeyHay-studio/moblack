@@ -63,20 +63,14 @@ class AppConstants {
 
   // --- PRODUCTS DATA ---
   static const String productFolderKey = 'Products/Hairs/images';
+  static const String productVideoFolderKey = 'Products/Hairs/videos';
 
   // --- GALLERY SECTION ---
   static const List<String> galleryImages = [
-    "https://images.unsplash.com/photo-1522335711546-267924fe378a?q=80&w=1470&auto=format&fit=crop",
     "https://images.unsplash.com/photo-1616166183781-0fdd2ef83374?w=500&auto=format&fit=crop",
     "https://images.unsplash.com/photo-1595476108010-b4d1f102b1b1?q=80&w=1374&auto=format&fit=crop",
-    "https://images.unsplash.com/photo-1512496011220-42ecaa6b33ec?q=80&w=1542&auto=format&fit=crop",
     "https://images.unsplash.com/photo-1492106087820-71f1a00d2b11?q=80&w=1374&auto=format&fit=crop",
     "https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?q=80&w=1469&auto=format&fit=crop",
     "https://images.unsplash.com/photo-1560066984-138dadb4c035?q=80&w=1374&auto=format&fit=crop",
-    "https://images.unsplash.com/photo-1620331311520-246422ff82f9?q=80&w=1374&auto=format&fit=crop",
-  ];
-
-  static const List<String> galleryVideos = [
-    // Add links to hosted video testimonials or work here
   ];
 }

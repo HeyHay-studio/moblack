@@ -104,7 +104,7 @@ class _GallerySectionState extends State<GallerySection>
         crossAxisSpacing: 16,
         childAspectRatio: 0.8,
       ),
-      itemCount: 8,
+      itemCount: assets.length > 8 ? 8 : assets.length,
       itemBuilder: (context, index) {
         return _buildGalleryItem(assets[index], index);
       },

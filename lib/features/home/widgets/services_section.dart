@@ -139,7 +139,10 @@ class ServicesSection extends StatelessWidget {
             onPressed: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => const ServicesPage()),
+                MaterialPageRoute(
+                  builder: (context) =>
+                      ServicesPage(dynamicServices: dynamicServices),
+                ),
               );
             },
             label: const Text(
@@ -177,23 +180,24 @@ class _ServiceCardState extends State<ServiceCard> {
     if (dynamicMedia != null && dynamicMedia.isNotEmpty) {
       // Hero Logic: Separate, Shuffle, Take up to 6 of each
       final allResources = List<CloudinaryResource>.from(dynamicMedia);
-      
-      final videos = allResources
-          .where((r) => r.type == CloudinaryResourceType.video)
-          .toList()
-        ..shuffle();
-      final selectedVideos = videos.take(6).toList();
 
-      final images = allResources
-          .where((r) => r.type == CloudinaryResourceType.image)
-          .toList()
-        ..shuffle();
-      final selectedImages = images.take(6).toList();
+      final videos =
+          allResources
+              .where((r) => r.type == CloudinaryResourceType.video)
+              .toList()
+            ..shuffle();
 
-      mediaItems = [...selectedVideos, ...selectedImages]..shuffle();
+      final images =
+          allResources
+              .where((r) => r.type == CloudinaryResourceType.image)
+              .toList()
+            ..shuffle();
+
+      mediaItems = [...videos, ...images]..shuffle();
     } else {
       // Fallback: Shuffle static images
-      mediaItems = List<String>.from(widget.serviceData['img'] ?? [])..shuffle();
+      mediaItems = List<String>.from(widget.serviceData['img'] ?? [])
+        ..shuffle();
     }
     _startSlideshow(mediaItems.length);
     super.initState();
