@@ -1,5 +1,6 @@
 import 'dart:ui';
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -8,7 +9,7 @@ import '../../../core/services/cloudinary_service.dart';
 import '../../products/products_page.dart';
 import 'video_provider_widget.dart';
 
-class ProductsSection extends StatelessWidget {
+class ProductsSection extends StatefulWidget {
   final bool isDesktop;
   final List<CloudinaryResource> productMedia;
 
@@ -19,8 +20,15 @@ class ProductsSection extends StatelessWidget {
   });
 
   @override
+  State<ProductsSection> createState() => _ProductsSectionState();
+}
+
+class _ProductsSectionState extends State<ProductsSection> {
+  bool _isNavigating = false;
+
+  @override
   Widget build(BuildContext context) {
-    if (productMedia.isEmpty) return const SizedBox.shrink();
+    if (widget.productMedia.isEmpty) return const SizedBox.shrink();
 
     return Container(
       padding: const EdgeInsets.symmetric(vertical: 80),
@@ -67,11 +75,13 @@ class ProductsSection extends StatelessWidget {
                       padding: const EdgeInsets.symmetric(horizontal: 24),
                       scrollDirection: Axis.horizontal,
                       physics: const BouncingScrollPhysics(),
-                      itemCount: productMedia.take(8).length,
+                      itemCount: widget.productMedia.take(8).length,
                       separatorBuilder: (context, index) =>
                           const SizedBox(width: 20),
                       itemBuilder: (context, index) {
-                        return _ProductCard(resource: productMedia[index]);
+                        return _ProductCard(
+                          resource: widget.productMedia[index],
+                        );
                       },
                     ),
                   ),
@@ -79,34 +89,175 @@ class ProductsSection extends StatelessWidget {
                 const SizedBox(height: 40),
                 Center(
                   child: TextButton.icon(
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) =>
-                              ProductsPage(productMedia: productMedia),
-                        ),
-                      );
-                    },
-                    icon: const Text(
-                      'VIEW ALL REELS & PRODUCTS',
-                      style: TextStyle(
-                        color: AppTheme.primaryGold,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    label: const Icon(
-                      Icons.arrow_forward,
-                      color: AppTheme.primaryGold,
-                      size: 18,
-                    ),
+                    onPressed: _isNavigating
+                        ? null
+                        : () async {
+                            setState(() => _isNavigating = true);
+                            await Navigator.push(
+                              context,
+                              CupertinoPageRoute(
+                                builder: (context) => ProductsPage(
+                                  productMedia: widget.productMedia,
+                                ),
+                              ),
+                            );
+                            if (mounted) setState(() => _isNavigating = false);
+                          },
+                    icon: _isNavigating
+                        ? const SizedBox(
+                            width: 16,
+                            height: 16,
+                            child: CupertinoActivityIndicator(
+                              color: AppTheme.primaryGold,
+                              radius: 8,
+                            ),
+                          )
+                        : const Text(
+                            'VIEW ALL PRODUCTS',
+                            style: TextStyle(
+                              color: AppTheme.primaryGold,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                    label: _isNavigating
+                        ? const SizedBox.shrink()
+                        : const Icon(
+                            Icons.arrow_forward,
+                            color: AppTheme.primaryGold,
+                            size: 18,
+                          ),
                   ),
+                ),
+                const SizedBox(height: 40),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 24),
+                  child: _buildPeoplePromise(widget.isDesktop),
                 ),
               ],
             ),
           ),
         ],
       ),
+    );
+  }
+
+  Widget _buildPeoplePromise(bool isDesktop) {
+    return Container(
+      width: double.infinity,
+      padding: EdgeInsets.all(isDesktop ? 60 : 32),
+      decoration: BoxDecoration(
+        color: AppTheme.primaryGold.withAlpha(8),
+        borderRadius: BorderRadius.circular(40),
+        border: Border.all(color: AppTheme.primaryGold.withAlpha(20)),
+      ),
+      child: Column(
+        children: [
+          Icon(Icons.auto_awesome, color: AppTheme.primaryGold, size: 40),
+          const SizedBox(height: 24),
+          Text(
+            'OUR PEOPLE PROMISE',
+            style: GoogleFonts.aboreto(
+              color: AppTheme.primaryGold,
+              fontSize: 16,
+              fontWeight: FontWeight.bold,
+              letterSpacing: 4,
+            ),
+          ),
+          const SizedBox(height: 20),
+          Text(
+            'We don\'t just provide any product.\nWe provide confidence.',
+            textAlign: TextAlign.center,
+            style: GoogleFonts.playfairDisplay(
+              color: Colors.white,
+              fontSize: isDesktop ? 32 : 24,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          const SizedBox(height: 48),
+          () {
+            final promises = [
+              {
+                'icon': Icons.verified_user,
+                'title': 'Ethical Sourcing',
+                'desc': '100% authentic products from ethical sources.',
+              },
+              {
+                'icon': Icons.inventory,
+                'title': 'Quality Graded',
+                'desc': 'Hand-picked bundles for hair health.',
+              },
+              {
+                'icon': Icons.support_agent,
+                'title': 'Expert Care',
+                'desc': 'Direct access to pro styling advice.',
+              },
+              {
+                'icon': Icons.local_shipping,
+                'desc': 'Safe and fast shipping for your luxury pieces.',
+                'title': 'Secure Delivery',
+              },
+            ];
+
+            final promiseWidgets = promises
+                .map(
+                  (p) => _promiseItem(
+                    p['icon'] as IconData,
+                    p['title'] as String,
+                    p['desc'] as String,
+                  ),
+                )
+                .toList();
+
+            if (isDesktop) {
+              return Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: promiseWidgets
+                    .map(
+                      (w) => Expanded(
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 16),
+                          child: w,
+                        ),
+                      ),
+                    )
+                    .toList(),
+              );
+            } else {
+              return Column(
+                children:
+                    promiseWidgets
+                        .expand((w) => [w, const SizedBox(height: 32)])
+                        .toList()
+                      ..removeLast(),
+              );
+            }
+          }(),
+        ],
+      ),
+    );
+  }
+
+  Widget _promiseItem(IconData icon, String title, String desc) {
+    return Column(
+      children: [
+        Icon(icon, color: Colors.white70, size: 28),
+        const SizedBox(height: 16),
+        Text(
+          title,
+          style: GoogleFonts.playfairDisplay(
+            color: Colors.white,
+            fontSize: 18,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        const SizedBox(height: 8),
+        Text(
+          desc,
+          textAlign: TextAlign.center,
+          style: const TextStyle(color: Colors.grey, fontSize: 13),
+        ),
+      ],
     );
   }
 }

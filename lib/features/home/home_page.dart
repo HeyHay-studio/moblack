@@ -28,6 +28,7 @@ class _HomePageState extends State<HomePage> {
   final GlobalKey bookingKey = GlobalKey();
   final GlobalKey aboutKey = GlobalKey();
   final GlobalKey galleryKey = GlobalKey();
+  final GlobalKey serviceKey = GlobalKey();
 
   // Dynamic Data
   List<CloudinaryResource> _allResources = [];
@@ -101,12 +102,20 @@ class _HomePageState extends State<HomePage> {
       case 'about':
         targetKey = aboutKey;
         break;
+      case 'services':
+        targetKey = serviceKey;
+        break;
     }
 
     if (targetKey?.currentContext != null) {
       Scrollable.ensureVisible(
         targetKey!.currentContext!,
-        alignment: targetKey == galleryKey || targetKey == bookingKey ? 0 : 0.5,
+        alignment:
+            targetKey == galleryKey ||
+                targetKey == bookingKey ||
+                targetKey == serviceKey
+            ? 0
+            : 0.5,
         duration: const Duration(milliseconds: 1000),
         curve: Curves.linearToEaseOut,
       );
@@ -123,10 +132,10 @@ class _HomePageState extends State<HomePage> {
     return AppConstants.services.map((service) {
       final imgFolder = service['folderKey'];
       final videoFolder = service['videoFolderKey'];
-      
+
       final images = _groupedResources[imgFolder] ?? [];
       final videos = _groupedResources[videoFolder] ?? [];
-      
+
       final dynamicMedia = [...images, ...videos];
 
       return {
@@ -175,6 +184,7 @@ class _HomePageState extends State<HomePage> {
                   onNavTap: scrollToSection,
                 ),
                 ServicesSection(
+                  key: serviceKey,
                   isDesktop: isDesktop,
                   dynamicServices: List.from(dynamicServices)..shuffle(),
                 ),

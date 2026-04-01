@@ -106,17 +106,17 @@ class FooterSection extends StatelessWidget {
           children: [
             FavIcon(
               icon: FontAwesomeIcons.instagram,
-              onTap: () => CommunicationService.launchInstagram('moblack'),
+              onTap: () => CommunicationService.launchInstagram(),
             ),
             const SizedBox(width: 16),
             FavIcon(
-              icon: FontAwesomeIcons.xTwitter,
-              onTap: () => CommunicationService.launchX('moblack'),
+              icon: FontAwesomeIcons.facebook,
+              onTap: () => CommunicationService.launchFacebook(),
             ),
             const SizedBox(width: 16),
             FavIcon(
               icon: FontAwesomeIcons.tiktok,
-              onTap: () => CommunicationService.launchTikTok('moblack'),
+              onTap: () => CommunicationService.launchTikTok(),
             ),
             const SizedBox(width: 16),
             FavIcon(

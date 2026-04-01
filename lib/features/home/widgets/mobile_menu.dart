@@ -7,8 +7,6 @@ import 'package:moblack/core/constants.dart';
 import 'package:moblack/core/theme.dart';
 
 import '../../../core/services/communication_service.dart';
-import '../../../core/services/pages/services_page.dart';
-import '../../products/products_page.dart';
 import '../../widgets/fav_icon.dart';
 
 class MobileMenu extends StatefulWidget {
@@ -204,23 +202,7 @@ class _MobileMenuState extends State<MobileMenu>
                                         index,
                                         navLinks.length,
                                         () {
-                                          if (label == 'Services') {
-                                            Navigator.push(
-                                              context,
-                                              MaterialPageRoute(
-                                                builder: (context) =>
-                                                    const ServicesPage(),
-                                              ),
-                                            );
-                                          } else if (label == 'Products') {
-                                            Navigator.push(
-                                              context,
-                                              MaterialPageRoute(
-                                                builder: (context) =>
-                                                    const ProductsPage(),
-                                              ),
-                                            );
-                                          } else if (widget.onNavTap != null) {
+                                          if (widget.onNavTap != null) {
                                             widget.onNavTap!(label);
                                           }
                                         },
@@ -246,23 +228,17 @@ class _MobileMenuState extends State<MobileMenu>
                                         FavIcon(
                                           icon: FontAwesomeIcons.instagram,
                                           onTap: () =>
-                                              CommunicationService.launchInstagram(
-                                                'moblack',
-                                              ),
+                                              CommunicationService.launchInstagram(),
                                         ),
                                         FavIcon(
-                                          icon: FontAwesomeIcons.xTwitter,
+                                          icon: FontAwesomeIcons.facebook,
                                           onTap: () =>
-                                              CommunicationService.launchX(
-                                                'moblack',
-                                              ),
+                                              CommunicationService.launchFacebook(),
                                         ),
                                         FavIcon(
                                           icon: FontAwesomeIcons.tiktok,
                                           onTap: () =>
-                                              CommunicationService.launchTikTok(
-                                                'moblack',
-                                              ),
+                                              CommunicationService.launchTikTok(),
                                         ),
                                         FavIcon(
                                           icon: FontAwesomeIcons.whatsapp,
@@ -270,7 +246,7 @@ class _MobileMenuState extends State<MobileMenu>
                                               CommunicationService.launchWhatsApp(
                                                 phoneNumber:
                                                     AppConstants.phoneNum,
-                                                message: 'Hello!',
+                                                message: 'Hello!, Moblack\n',
                                               ),
                                         ),
                                       ],

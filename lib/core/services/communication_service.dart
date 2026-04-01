@@ -41,8 +41,8 @@ class CommunicationService {
     }
   }
 
-  static Future<void> launchInstagram(String username) async {
-    final Uri uri = Uri.parse('https://instagram.com/$username');
+  static Future<void> launchInstagram() async {
+    final Uri uri = Uri.parse('https://instagram.com/abigailyawson');
     try {
       if (!await launchUrl(uri, mode: LaunchMode.externalApplication)) {
         throw 'Could not launch Instagram';
@@ -53,8 +53,8 @@ class CommunicationService {
     }
   }
 
-  static Future<void> launchX(String username) async {
-    final Uri uri = Uri.parse('https://x.com/$username');
+  static Future<void> launchFacebook() async {
+    final Uri uri = Uri.parse('https://facebook.com/abigail.yawson.31');
     try {
       if (!await launchUrl(uri, mode: LaunchMode.externalApplication)) {
         throw 'Could not launch X';
@@ -65,8 +65,8 @@ class CommunicationService {
     }
   }
 
-  static Future<void> launchTikTok(String username) async {
-    final Uri uri = Uri.parse('https://tiktok.com/@$username');
+  static Future<void> launchTikTok() async {
+    final Uri uri = Uri.parse('https://tiktok.com/@abigailyawson375');
     try {
       if (!await launchUrl(uri, mode: LaunchMode.externalApplication)) {
         throw 'Could not launch TikTok';

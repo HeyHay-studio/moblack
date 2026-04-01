@@ -4,8 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../../../core/constants.dart';
-import '../../../core/services/pages/services_page.dart';
-import '../../products/products_page.dart';
 
 class TopNavigation extends StatelessWidget {
   final bool isDesktop;
@@ -81,47 +79,32 @@ class TopNavigation extends StatelessWidget {
 
   Widget _buildDesktopNav(BuildContext context) {
     return Row(
-      children:
-          AppConstants.navLinks
-              .map(
-                (link) => GestureDetector(
-                  onTap: () {
-                    if (link == 'Services') {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => const ServicesPage(),
-                        ),
-                      );
-                    } else if (link == 'Products') {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => const ProductsPage(),
-                        ),
-                      );
-                    } else if (onNavTap != null) {
-                      onNavTap!(link);
-                    }
-                  },
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 20),
-                    child: MouseRegion(
-                      cursor: SystemMouseCursors.click,
-                      child: Text(
-                        link.toUpperCase(),
-                        style: const TextStyle(
-                          color: Colors.white,
-                          fontSize: 13,
-                          fontWeight: FontWeight.w600,
-                          letterSpacing: 1.2,
-                        ),
-                      ),
+      children: AppConstants.navLinks
+          .map(
+            (link) => GestureDetector(
+              onTap: () {
+                if (onNavTap != null) {
+                  onNavTap!(link);
+                }
+              },
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 20),
+                child: MouseRegion(
+                  cursor: SystemMouseCursors.click,
+                  child: Text(
+                    link.toUpperCase(),
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 13,
+                      fontWeight: FontWeight.w600,
+                      letterSpacing: 1.2,
                     ),
                   ),
                 ),
-              )
-              .toList(),
+              ),
+            ),
+          )
+          .toList(),
     );
   }
 

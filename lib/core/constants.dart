@@ -1,10 +1,22 @@
 class AppConstants {
   // --- HELPERS ---
-  static String getWhatsAppBuyUrl(String publicId, String imageUrl) {
-    final message = "Hello Moblack, I'm interested in this product:\n"
-        "ID: $publicId\n"
-        "Link: $imageUrl\n"
-        "Is it available?";
+  static String getWhatsAppBuyUrl(
+    String publicId,
+    bool isVideo,
+  ) {
+    // Basic sanitization: only allow alphanumeric, dots, and slashes for publicId
+    final sanitizedId = publicId.replaceAll(RegExp(r'[^\w\.\-/]'), '');
+    
+    // Construct the URL using our trusted base to prevent external link injection
+    final mediaPath = isVideo ? 'video/upload/' : 'image/upload/';
+    final trustedBase = "https://res.cloudinary.com/$cloudName/$mediaPath";
+    final fullUrl = "$trustedBase$sanitizedId";
+
+    final message = "Hello Moblack! ✨\n\n"
+        "I'm interested in this product:\n"
+        "Reference ID: $sanitizedId\n\n"
+        "Product Details: $fullUrl";
+    
     final encodedMessage = Uri.encodeComponent(message);
     return "https://wa.me/$phoneNum?text=$encodedMessage";
   }
@@ -114,7 +126,6 @@ class AppConstants {
     "https://images.unsplash.com/photo-1616166183781-0fdd2ef83374?w=500&auto=format&fit=crop",
     "https://images.unsplash.com/photo-1595476108010-b4d1f102b1b1?q=80&w=1374&auto=format&fit=crop",
     "https://images.unsplash.com/photo-1492106087820-71f1a00d2b11?q=80&w=1374&auto=format&fit=crop",
-    "https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?q=80&w=1469&auto=format&fit=crop",
     "https://images.unsplash.com/photo-1560066984-138dadb4c035?q=80&w=1374&auto=format&fit=crop",
   ];
 }

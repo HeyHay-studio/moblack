@@ -31,7 +31,6 @@ class _HeroSectionState extends State<HeroSection> {
   int _currentPage = 0;
   Timer? _timer;
   List<CloudinaryResource> _heroResources = [];
-  bool _isLoading = true;
 
   @override
   void initState() {
@@ -40,7 +39,6 @@ class _HeroSectionState extends State<HeroSection> {
       _processResources(widget.allResources!);
     } else {
       _heroResources = _getFallbackResources();
-      _isLoading = false;
       _fetchAssets();
     }
   }
@@ -73,7 +71,6 @@ class _HeroSectionState extends State<HeroSection> {
         _heroResources = combined.isNotEmpty
             ? combined
             : _getFallbackResources();
-        _isLoading = false;
       });
       _startTimer();
     }

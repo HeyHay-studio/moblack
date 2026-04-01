@@ -216,8 +216,16 @@ class __GalleryItemState extends State<_GalleryItem> {
                       end: Alignment.topCenter,
                     ),
                   ),
-                  child: const Center(
-                    child: Icon(Icons.zoom_in, color: Colors.white, size: 32),
+                  child: Align(
+                    alignment: AlignmentGeometry.topStart,
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Image.asset(
+                        "assets/images/logo_removed.png",
+                        width: 30,
+                        height: 30,
+                      ),
+                    ),
                   ),
                 ),
               ),

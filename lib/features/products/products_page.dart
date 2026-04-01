@@ -17,9 +17,11 @@ class ProductsPage extends StatefulWidget {
 }
 
 class _ProductsPageState extends State<ProductsPage>
-    with SingleTickerProviderStateMixin {
+    with TickerProviderStateMixin {
   late AnimationController _controller;
+  late AnimationController _pulseController;
   late List<CloudinaryResource> _displayMedia;
+  bool _isInitialLoading = true;
 
   @override
   void initState() {
@@ -29,17 +31,36 @@ class _ProductsPageState extends State<ProductsPage>
       vsync: this,
       duration: const Duration(milliseconds: 1800),
     );
+
+    _pulseController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 1500),
+    )..repeat(reverse: true);
+
     _controller.forward();
+
+    // Brief delay to allow the page transition to finish and media to prep
+    Future.delayed(const Duration(milliseconds: 800), () {
+      if (mounted) {
+        setState(() {
+          _isInitialLoading = false;
+        });
+      }
+    });
   }
 
   @override
   void dispose() {
     _controller.dispose();
+    _pulseController.dispose();
     super.dispose();
   }
 
   Future<void> _buyNow(CloudinaryResource resource) async {
-    final url = AppConstants.getWhatsAppBuyUrl(resource.publicId, resource.url);
+    final url = AppConstants.getWhatsAppBuyUrl(
+      resource.publicId,
+      resource.type == CloudinaryResourceType.video,
+    );
     final uri = Uri.parse(url);
     if (await canLaunchUrl(uri)) {
       await launchUrl(uri, mode: LaunchMode.externalApplication);
@@ -125,7 +146,7 @@ class _ProductsPageState extends State<ProductsPage>
                 ),
                 const SizedBox(height: 8),
                 Text(
-                  'Premium Hair Products',
+                  'Premium Products',
                   style: GoogleFonts.playfairDisplay(
                     color: Colors.white,
                     fontSize: isDesktop ? 48 : 32,
@@ -134,7 +155,7 @@ class _ProductsPageState extends State<ProductsPage>
                 ),
                 const SizedBox(height: 32),
 
-                if (_displayMedia.isEmpty)
+                if (_displayMedia.isEmpty && !_isInitialLoading)
                   const Center(
                     child: Text(
                       'No products available.',
@@ -142,21 +163,26 @@ class _ProductsPageState extends State<ProductsPage>
                     ),
                   )
                 else
-                  GridView.builder(
-                    shrinkWrap: true,
-                    physics: const NeverScrollableScrollPhysics(),
-                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: isDesktop ? 3 : 1,
-                      mainAxisSpacing: 32,
-                      crossAxisSpacing: 32,
-                      childAspectRatio: isDesktop ? 0.85 : 0.8,
-                    ),
-                    itemCount: _displayMedia.length,
-                    itemBuilder: (context, index) => _buildAnimatedItem(index),
+                  AnimatedSwitcher(
+                    duration: const Duration(milliseconds: 600),
+                    child: _isInitialLoading
+                        ? _buildSkeletonGrid(isDesktop)
+                        : GridView.builder(
+                            key: const ValueKey('actual_grid'),
+                            shrinkWrap: true,
+                            physics: const NeverScrollableScrollPhysics(),
+                            gridDelegate:
+                                SliverGridDelegateWithFixedCrossAxisCount(
+                                  crossAxisCount: isDesktop ? 3 : 1,
+                                  mainAxisSpacing: 32,
+                                  crossAxisSpacing: 32,
+                                  childAspectRatio: isDesktop ? 0.85 : 0.8,
+                                ),
+                            itemCount: _displayMedia.length,
+                            itemBuilder: (context, index) =>
+                                _buildAnimatedItem(index),
+                          ),
                   ),
-
-                const SizedBox(height: 80),
-                _buildPeoplePromise(isDesktop),
                 const SizedBox(height: 40),
               ],
             ),
@@ -166,123 +192,20 @@ class _ProductsPageState extends State<ProductsPage>
     );
   }
 
-  Widget _buildPeoplePromise(bool isDesktop) {
-    return Container(
-      width: double.infinity,
-      padding: EdgeInsets.all(isDesktop ? 60 : 32),
-      decoration: BoxDecoration(
-        color: AppTheme.primaryGold.withAlpha(8),
-        borderRadius: BorderRadius.circular(40),
-        border: Border.all(color: AppTheme.primaryGold.withAlpha(20)),
+  Widget _buildSkeletonGrid(bool isDesktop) {
+    return GridView.builder(
+      key: const ValueKey('skeleton_grid'),
+      shrinkWrap: true,
+      physics: const NeverScrollableScrollPhysics(),
+      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: isDesktop ? 3 : 1,
+        mainAxisSpacing: 32,
+        crossAxisSpacing: 32,
+        childAspectRatio: isDesktop ? 0.85 : 0.8,
       ),
-      child: Column(
-        children: [
-          Icon(Icons.auto_awesome, color: AppTheme.primaryGold, size: 40),
-          const SizedBox(height: 24),
-          Text(
-            'OUR PEOPLE PROMISE',
-            style: GoogleFonts.aboreto(
-              color: AppTheme.primaryGold,
-              fontSize: 16,
-              fontWeight: FontWeight.bold,
-              letterSpacing: 4,
-            ),
-          ),
-          const SizedBox(height: 20),
-          Text(
-            'We don\'t just provide any product.\nWe provide confidence.',
-            textAlign: TextAlign.center,
-            style: GoogleFonts.playfairDisplay(
-              color: Colors.white,
-              fontSize: isDesktop ? 32 : 24,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-          const SizedBox(height: 48),
-          () {
-            final promises = [
-              {
-                'icon': Icons.verified_user,
-                'title': 'Ethical Sourcing',
-                'desc': '100% authentic products from ethical sources.',
-              },
-              {
-                'icon': Icons.inventory,
-                'title': 'Quality Graded',
-                'desc': 'Hand-picked bundles for hair health.',
-              },
-              {
-                'icon': Icons.support_agent,
-                'title': 'Expert Care',
-                'desc': 'Direct access to pro styling advice.',
-              },
-              {
-                'icon': Icons.local_shipping,
-                'desc': 'Safe and fast shipping for your luxury pieces.',
-                'title': 'Secure Delivery',
-              },
-            ];
-
-            final promiseWidgets = promises
-                .map(
-                  (p) => _promiseItem(
-                    p['icon'] as IconData,
-                    p['title'] as String,
-                    p['desc'] as String,
-                  ),
-                )
-                .toList();
-
-            if (isDesktop) {
-              return Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: promiseWidgets
-                    .map(
-                      (w) => Expanded(
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 16),
-                          child: w,
-                        ),
-                      ),
-                    )
-                    .toList(),
-              );
-            } else {
-              return Column(
-                children:
-                    promiseWidgets
-                        .expand((w) => [w, const SizedBox(height: 32)])
-                        .toList()
-                      ..removeLast(),
-              );
-            }
-          }(),
-        ],
-      ),
-    );
-  }
-
-  Widget _promiseItem(IconData icon, String title, String desc) {
-    return Column(
-      children: [
-        Icon(icon, color: Colors.white70, size: 28),
-        const SizedBox(height: 16),
-        Text(
-          title,
-          style: GoogleFonts.playfairDisplay(
-            color: Colors.white,
-            fontSize: 18,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-        const SizedBox(height: 8),
-        Text(
-          desc,
-          textAlign: TextAlign.center,
-          style: const TextStyle(color: Colors.grey, fontSize: 13),
-        ),
-      ],
+      itemCount: _displayMedia.isNotEmpty ? _displayMedia.length : 6,
+      itemBuilder: (context, index) =>
+          _SkeletonCard(animation: _pulseController),
     );
   }
 }
@@ -330,13 +253,14 @@ class _ProductGridCardState extends State<_ProductGridCard> {
                       Image.network(widget.resource.url, fit: BoxFit.cover),
 
                     if (_isHovered)
-                      Container(
-                        color: Colors.black26,
-                        child: const Center(
-                          child: Icon(
-                            Icons.zoom_in,
-                            color: Colors.white,
-                            size: 40,
+                      Align(
+                        alignment: AlignmentGeometry.topStart,
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Image.asset(
+                            "assets/images/logo_removed.png",
+                            width: 30,
+                            height: 30,
                           ),
                         ),
                       ),
@@ -350,32 +274,15 @@ class _ProductGridCardState extends State<_ProductGridCard> {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   Flexible(
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Text(
-                          'PREMIUM COLLECTION',
-                          style: GoogleFonts.aboreto(
-                            color: AppTheme.primaryGold,
-                            fontSize: 10,
-                            letterSpacing: 2,
-                          ),
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                        const SizedBox(height: 4),
-                        Text(
-                          'Authentic Hair Extension',
-                          textAlign: TextAlign.center,
-                          style: GoogleFonts.playfairDisplay(
-                            color: Colors.white,
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold,
-                          ),
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                      ],
+                    child: Text(
+                      'PREMIUM COLLECTION',
+                      style: GoogleFonts.aboreto(
+                        color: AppTheme.primaryGold,
+                        fontSize: 16,
+                        letterSpacing: 2,
+                      ),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
                     ),
                   ),
                   const SizedBox(height: 16),
@@ -403,6 +310,78 @@ class _ProductGridCardState extends State<_ProductGridCard> {
           ],
         ),
       ),
+    );
+  }
+}
+
+class _SkeletonCard extends StatelessWidget {
+  final Animation<double> animation;
+
+  const _SkeletonCard({required this.animation});
+
+  @override
+  Widget build(BuildContext context) {
+    return AnimatedBuilder(
+      animation: animation,
+      builder: (context, child) {
+        return Opacity(
+          opacity: 0.3 + (animation.value * 0.35),
+          child: Container(
+            decoration: BoxDecoration(
+              color: Colors.white.withAlpha(15),
+              borderRadius: BorderRadius.circular(32),
+              border: Border.all(color: Colors.white.withAlpha(20)),
+            ),
+            child: Column(
+              children: [
+                Expanded(
+                  child: Container(
+                    decoration: BoxDecoration(
+                      color: Colors.white.withAlpha(10),
+                      borderRadius: const BorderRadius.vertical(
+                        top: Radius.circular(32),
+                      ),
+                    ),
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(16),
+                  child: Column(
+                    children: [
+                      Container(
+                        height: 10,
+                        width: 80,
+                        decoration: BoxDecoration(
+                          color: Colors.white.withAlpha(10),
+                          borderRadius: BorderRadius.circular(5),
+                        ),
+                      ),
+                      const SizedBox(height: 12),
+                      Container(
+                        height: 18,
+                        width: 160,
+                        decoration: BoxDecoration(
+                          color: Colors.white.withAlpha(10),
+                          borderRadius: BorderRadius.circular(5),
+                        ),
+                      ),
+                      const SizedBox(height: 20),
+                      Container(
+                        height: 48,
+                        width: double.infinity,
+                        decoration: BoxDecoration(
+                          color: Colors.white.withAlpha(10),
+                          borderRadius: BorderRadius.circular(16),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
     );
   }
 }
