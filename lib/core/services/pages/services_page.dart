@@ -255,7 +255,7 @@ class _ServicesPageState extends State<ServicesPage>
                         shrinkWrap: true,
                         physics: const NeverScrollableScrollPhysics(),
                         itemCount: _displayServices.length,
-                        separatorBuilder: (_, __) => const SizedBox(height: 32),
+                        separatorBuilder: (_, _) => const SizedBox(height: 32),
                         itemBuilder: (context, index) => SizedBox(
                           height: 450,
                           child: _buildAnimatedItem(index),
