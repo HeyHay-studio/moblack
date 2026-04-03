@@ -57,7 +57,7 @@ class CloudinaryService {
         final List<dynamic> resData = data['resources'] ?? [];
 
         return resData.map((res) {
-          final publicId = res['public_id'];
+          final publicId = res['public_id'] as String;
           final version = res['version'];
           final format = res['format'];
           final folder = res['asset_folder'];

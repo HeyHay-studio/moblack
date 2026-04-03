@@ -5,13 +5,13 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../../../../core/theme.dart';
-import '../../../core/services/cloudinary_service.dart';
+import '../../../../core/models/product_record.dart';
 import '../../products/products_page.dart';
 import 'video_provider_widget.dart';
 
 class ProductsSection extends StatefulWidget {
   final bool isDesktop;
-  final List<CloudinaryResource> productMedia;
+  final List<ProductRecord> productMedia;
 
   const ProductsSection({
     super.key,
@@ -28,8 +28,6 @@ class _ProductsSectionState extends State<ProductsSection> {
 
   @override
   Widget build(BuildContext context) {
-    if (widget.productMedia.isEmpty) return const SizedBox.shrink();
-
     return Container(
       padding: const EdgeInsets.symmetric(vertical: 80),
       decoration: BoxDecoration(color: Colors.white.withValues(alpha: 0.03)),
@@ -63,28 +61,39 @@ class _ProductsSectionState extends State<ProductsSection> {
                 const SizedBox(height: 48),
                 SizedBox(
                   height: 400,
-                  child: ScrollConfiguration(
-                    behavior: ScrollConfiguration.of(context).copyWith(
-                      dragDevices: {
-                        PointerDeviceKind.touch,
-                        PointerDeviceKind.mouse,
-                        PointerDeviceKind.trackpad,
-                      },
-                    ),
-                    child: ListView.separated(
-                      padding: const EdgeInsets.symmetric(horizontal: 24),
-                      scrollDirection: Axis.horizontal,
-                      physics: const BouncingScrollPhysics(),
-                      itemCount: widget.productMedia.take(8).length,
-                      separatorBuilder: (context, index) =>
-                          const SizedBox(width: 20),
-                      itemBuilder: (context, index) {
-                        return _ProductCard(
-                          resource: widget.productMedia[index],
-                        );
-                      },
-                    ),
-                  ),
+                  child: widget.productMedia.isEmpty
+                      ? Center(
+                          child: Text(
+                            'New collections dropping soon! ✨',
+                            style: GoogleFonts.playfairDisplay(
+                              color: Colors.white54,
+                              fontSize: 24,
+                              fontStyle: FontStyle.italic,
+                            ),
+                          ),
+                        )
+                      : ScrollConfiguration(
+                          behavior: ScrollConfiguration.of(context).copyWith(
+                            dragDevices: {
+                              PointerDeviceKind.touch,
+                              PointerDeviceKind.mouse,
+                              PointerDeviceKind.trackpad,
+                            },
+                          ),
+                          child: ListView.separated(
+                            padding: const EdgeInsets.symmetric(horizontal: 24),
+                            scrollDirection: Axis.horizontal,
+                            physics: const BouncingScrollPhysics(),
+                            itemCount: widget.productMedia.take(8).length,
+                            separatorBuilder: (context, index) =>
+                                const SizedBox(width: 20),
+                            itemBuilder: (context, index) {
+                              return _ProductCard(
+                                resource: widget.productMedia[index],
+                              );
+                            },
+                          ),
+                        ),
                 ),
                 const SizedBox(height: 40),
                 Center(
@@ -263,7 +272,7 @@ class _ProductsSectionState extends State<ProductsSection> {
 }
 
 class _ProductCard extends StatefulWidget {
-  final CloudinaryResource resource;
+  final ProductRecord resource;
 
   const _ProductCard({required this.resource});
 
@@ -294,7 +303,7 @@ class __ProductCardState extends State<_ProductCard> {
           child: Stack(
             fit: StackFit.expand,
             children: [
-              if (widget.resource.type == CloudinaryResourceType.video)
+              if (widget.resource.type == MediaType.video)
                 VideoProviderWidget(videoUrl: widget.resource.url)
               else
                 Image.network(widget.resource.url, fit: BoxFit.cover),
@@ -324,14 +333,38 @@ class __ProductCardState extends State<_ProductCard> {
                         ),
                       ),
                       const SizedBox(height: 4),
-                      const Text(
-                        'Luxury Hair Extension',
-                        style: TextStyle(
+                      Text(
+                        widget.resource.title,
+                        style: const TextStyle(
                           color: Colors.white,
                           fontSize: 16,
                           fontWeight: FontWeight.w600,
                         ),
                       ),
+                      const SizedBox(height: 4),
+                      Text(
+                        widget.resource.price != null
+                            ? 'GH₵ ${widget.resource.price!.toStringAsFixed(0)}'
+                            : 'Consult for details',
+                        style: const TextStyle(
+                          color: Colors.white70,
+                          fontSize: 11,
+                          fontStyle: FontStyle.italic,
+                        ),
+                      ),
+                      if (!widget.resource.isAvailable)
+                        Container(
+                          margin: const EdgeInsets.only(top: 8),
+                          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                          decoration: BoxDecoration(
+                            color: Colors.redAccent.withValues(alpha: 0.8),
+                            borderRadius: BorderRadius.circular(4),
+                          ),
+                          child: const Text(
+                            'UNAVAILABLE',
+                            style: TextStyle(color: Colors.white, fontSize: 10, fontWeight: FontWeight.bold),
+                          ),
+                        ),
                     ],
                   ),
                 ),

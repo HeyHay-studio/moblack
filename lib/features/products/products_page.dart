@@ -2,13 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import '../../core/constants.dart';
-import '../../core/services/cloudinary_service.dart';
+import '../../core/models/product_record.dart';
 import '../../core/theme.dart';
 import '../home/widgets/video_provider_widget.dart';
 
 class ProductsPage extends StatefulWidget {
-  final List<CloudinaryResource>? productMedia;
+  final List<ProductRecord>? productMedia;
 
   const ProductsPage({super.key, this.productMedia});
 
@@ -20,7 +21,7 @@ class _ProductsPageState extends State<ProductsPage>
     with TickerProviderStateMixin {
   late AnimationController _controller;
   late AnimationController _pulseController;
-  late List<CloudinaryResource> _displayMedia;
+  late List<ProductRecord> _displayMedia;
   bool _isInitialLoading = true;
 
   @override
@@ -56,10 +57,11 @@ class _ProductsPageState extends State<ProductsPage>
     super.dispose();
   }
 
-  Future<void> _buyNow(CloudinaryResource resource) async {
+  Future<void> _buyNow(ProductRecord resource) async {
+
     final url = AppConstants.getWhatsAppBuyUrl(
       resource.publicId,
-      resource.type == CloudinaryResourceType.video,
+      resource.type == MediaType.video,
     );
     final uri = Uri.parse(url);
     if (await canLaunchUrl(uri)) {
@@ -211,7 +213,7 @@ class _ProductsPageState extends State<ProductsPage>
 }
 
 class _ProductGridCard extends StatefulWidget {
-  final CloudinaryResource resource;
+  final ProductRecord resource;
   final VoidCallback onBuy;
 
   const _ProductGridCard({required this.resource, required this.onBuy});
@@ -247,7 +249,7 @@ class _ProductGridCardState extends State<_ProductGridCard> {
                 child: Stack(
                   fit: StackFit.expand,
                   children: [
-                    if (widget.resource.type == CloudinaryResourceType.video)
+                    if (widget.resource.type == MediaType.video)
                       VideoProviderWidget(videoUrl: widget.resource.url)
                     else
                       Image.network(widget.resource.url, fit: BoxFit.cover),
@@ -274,15 +276,53 @@ class _ProductGridCardState extends State<_ProductGridCard> {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   Flexible(
-                    child: Text(
-                      'PREMIUM COLLECTION',
-                      style: GoogleFonts.aboreto(
-                        color: AppTheme.primaryGold,
-                        fontSize: 16,
-                        letterSpacing: 2,
-                      ),
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text(
+                          'PREMIUM COLLECTION',
+                          style: GoogleFonts.aboreto(
+                            color: AppTheme.primaryGold,
+                            fontSize: 12,
+                            letterSpacing: 2,
+                          ),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                        const SizedBox(height: 4),
+                        Text(
+                          widget.resource.title,
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 16,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                        const SizedBox(height: 4),
+                        Text(
+                          widget.resource.price != null
+                              ? 'GH₵ ${widget.resource.price!.toStringAsFixed(0)}'
+                              : 'Consult for details',
+                          style: const TextStyle(
+                            color: Colors.white70,
+                            fontSize: 12,
+                            fontStyle: FontStyle.italic,
+                          ),
+                        ),
+                        if (!widget.resource.isAvailable)
+                          Container(
+                            margin: const EdgeInsets.only(top: 8),
+                            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                            decoration: BoxDecoration(
+                              color: Colors.redAccent.withValues(alpha: 0.8),
+                              borderRadius: BorderRadius.circular(4),
+                            ),
+                            child: const Text(
+                              'UNAVAILABLE',
+                              style: TextStyle(color: Colors.white, fontSize: 10, fontWeight: FontWeight.bold),
+                            ),
+                          ),
+                      ],
                     ),
                   ),
                   const SizedBox(height: 16),

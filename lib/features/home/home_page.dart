@@ -1,7 +1,10 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 
 import '../../core/constants.dart';
+import '../../core/models/product_record.dart';
 import '../../core/services/cloudinary_service.dart';
+import '../../core/services/product_service.dart';
 import '../../core/theme.dart';
 import 'widgets/booking_section.dart';
 import 'widgets/footer_section.dart';
@@ -33,13 +36,29 @@ class _HomePageState extends State<HomePage> {
   // Dynamic Data
   List<CloudinaryResource> _allResources = [];
   Map<String, List<CloudinaryResource>> _groupedResources = {};
+  Map<String, List<ProductRecord>> _groupedProducts = {};
   bool _isLoading = true;
   bool _hasError = false;
+  
+  StreamSubscription<Map<String, List<ProductRecord>>>? _productSub;
 
   @override
   void initState() {
     super.initState();
     _fetchMasterData();
+    
+    _productSub = ProductService.streamGroupedProducts().listen(
+      (products) {
+        if (mounted) {
+          setState(() {
+            _groupedProducts = products;
+          });
+        }
+      },
+      onError: (e) {
+        print('=== PRODUCT STREAM ERROR: $e');
+      },
+    );
   }
 
   Future<void> _fetchMasterData() async {
@@ -64,11 +83,11 @@ class _HomePageState extends State<HomePage> {
           _allResources = assets;
           _groupedResources = CloudinaryService.groupByFolder(assets);
           _isLoading = false;
-          _hasError =
-              assets.isEmpty; // Consider empty as error for first run recovery
+          _hasError = false; 
         });
       }
     } catch (e) {
+      print('=== FETCH ERROR: $e');
       if (mounted) {
         setState(() {
           _isLoading = false;
@@ -80,6 +99,7 @@ class _HomePageState extends State<HomePage> {
 
   @override
   void dispose() {
+    _productSub?.cancel();
     scrollController.dispose();
     super.dispose();
   }
@@ -164,9 +184,9 @@ class _HomePageState extends State<HomePage> {
     final galleryImages = _getGalleryImages();
 
     final productImages =
-        _groupedResources[AppConstants.productFolderKey] ?? [];
+        _groupedProducts[AppConstants.productFolderKey] ?? [];
     final productVideos =
-        _groupedResources[AppConstants.productVideoFolderKey] ?? [];
+        _groupedProducts[AppConstants.productVideoFolderKey] ?? [];
     final productMedia = [...productImages, ...productVideos]..shuffle();
 
     return Scaffold(
