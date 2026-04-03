@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-import 'package:cloud_firestore/cloud_firestore.dart';
 import '../../core/constants.dart';
 import '../../core/models/product_record.dart';
 import '../../core/theme.dart';
@@ -58,7 +57,6 @@ class _ProductsPageState extends State<ProductsPage>
   }
 
   Future<void> _buyNow(ProductRecord resource) async {
-
     final url = AppConstants.getWhatsAppBuyUrl(
       resource.publicId,
       resource.type == MediaType.video,
@@ -312,14 +310,21 @@ class _ProductGridCardState extends State<_ProductGridCard> {
                         if (!widget.resource.isAvailable)
                           Container(
                             margin: const EdgeInsets.only(top: 8),
-                            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 8,
+                              vertical: 4,
+                            ),
                             decoration: BoxDecoration(
                               color: Colors.redAccent.withValues(alpha: 0.8),
                               borderRadius: BorderRadius.circular(4),
                             ),
                             child: const Text(
                               'UNAVAILABLE',
-                              style: TextStyle(color: Colors.white, fontSize: 10, fontWeight: FontWeight.bold),
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 10,
+                                fontWeight: FontWeight.bold,
+                              ),
                             ),
                           ),
                       ],
