@@ -130,9 +130,9 @@ class _ServiceCardState extends State<ServiceCard> {
 
   @override
   void initState() {
+    super.initState();
     final dynamicMedia = widget.serviceData['media'] as List?;
     if (dynamicMedia != null && dynamicMedia.isNotEmpty) {
-      // Hero Logic: Separate, Shuffle, Take up to 6 of each
       final allResources = List<CloudinaryResource>.from(dynamicMedia);
 
       final videos =
@@ -154,7 +154,6 @@ class _ServiceCardState extends State<ServiceCard> {
         ..shuffle();
     }
     _startSlideshow();
-    super.initState();
   }
 
   @override
@@ -206,8 +205,8 @@ class _ServiceCardState extends State<ServiceCard> {
           borderRadius: BorderRadius.circular(40),
           boxShadow: [
             BoxShadow(
-              color: AppTheme.primaryGold.withValues(
-                alpha: _isHovered ? 0.3 : 0.0,
+              color: AppTheme.textWhite.withValues(
+                alpha: _isHovered ? 0.05 : 0.0,
               ),
               blurRadius: _isHovered ? 30 : 20,
               offset: Offset(0, _isHovered ? 15 : 10),
@@ -308,32 +307,6 @@ class _ServiceCardState extends State<ServiceCard> {
                   ),
                 ),
               ),
-
-            AnimatedPositioned(
-              duration: const Duration(milliseconds: 300),
-              curve: Curves.easeOutCubic,
-              bottom: _isHovered ? 32 : 24,
-              right: 32,
-              child: AnimatedOpacity(
-                duration: const Duration(milliseconds: 300),
-                opacity: _isHovered ? 1.0 : 0.0,
-                child: Container(
-                  width: 48,
-                  height: 48,
-                  decoration: const BoxDecoration(
-                    color: Colors.white,
-                    shape: BoxShape.circle,
-                    boxShadow: [
-                      BoxShadow(color: Colors.black12, blurRadius: 10),
-                    ],
-                  ),
-                  child: const Icon(
-                    Icons.arrow_forward,
-                    color: AppTheme.primaryGold,
-                  ),
-                ),
-              ),
-            ),
           ],
         ),
       ),

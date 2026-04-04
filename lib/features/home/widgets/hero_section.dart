@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:developer';
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
@@ -81,7 +80,6 @@ class _HeroSectionState extends State<HeroSection> {
       AppConstants.mainTag,
     );
     _processResources(assets);
-    log('Hero assets fetched manually: ${assets.isNotEmpty}');
   }
 
   List<CloudinaryResource> _getFallbackResources() {

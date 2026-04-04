@@ -1,5 +1,3 @@
-import 'dart:ui';
-
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -106,87 +104,9 @@ class _ServicesPageState extends State<ServicesPage>
     );
   }
 
-  Widget _buildFeedbackCard(Map<String, dynamic> feedback) {
-    return Container(
-      padding: const EdgeInsets.all(24),
-      width: 300,
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          colors: [
-            AppTheme.primaryGold.withAlpha(180),
-            Colors.white.withAlpha(200),
-          ],
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-        ),
-        borderRadius: BorderRadius.circular(24),
-        border: Border.all(color: Colors.white12),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            children: List.generate(5, (i) {
-              return Icon(
-                i < (feedback['rating'] as int)
-                    ? Icons.star
-                    : Icons.star_border,
-                color: Colors.amber,
-                size: 16,
-              );
-            }),
-          ),
-          const SizedBox(height: 12),
-          Text(
-            '"${feedback['comment']}"',
-            style: const TextStyle(
-              color: Colors.white70,
-              fontStyle: FontStyle.italic,
-              fontSize: 14,
-            ),
-          ),
-          const SizedBox(height: 16),
-          Text(
-            feedback['name'],
-            style: const TextStyle(
-              color: Colors.white,
-              fontWeight: FontWeight.bold,
-              fontSize: 14,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     final isDesktop = MediaQuery.of(context).size.width > 800;
-    final feedbacks = [
-      {
-        'name': 'Sarah Johnson',
-        'rating': 5,
-        'comment':
-            'The best braiding experience I’ve ever had! Highly recommend.',
-      },
-      {
-        'name': 'Michael Brown',
-        'rating': 5,
-        'comment':
-            'Professional service and amazing atmosphere. My go-to place now.',
-      },
-      {
-        'name': 'Elena Rodriguez',
-        'rating': 4,
-        'comment':
-            'Great styling and very attention to detail. Love the result!',
-      },
-      {
-        'name': 'David Wilson',
-        'rating': 5,
-        'comment': 'Amazing staff and very luxury vibes. Worth every penny.',
-      },
-    ];
 
     return Scaffold(
       backgroundColor: AppTheme.backgroundBlack,
@@ -329,39 +249,6 @@ class _ServicesPageState extends State<ServicesPage>
                           ),
                         ],
                       ),
-
-                const SizedBox(height: 80),
-
-                // Feedbacks Section
-                Text(
-                  'What Our Clients Say',
-                  style: GoogleFonts.playfairDisplay(
-                    color: Colors.white,
-                    fontSize: 32,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                const SizedBox(height: 32),
-                SizedBox(
-                  height: 200,
-                  child: ScrollConfiguration(
-                    behavior: ScrollConfiguration.of(context).copyWith(
-                      dragDevices: {
-                        PointerDeviceKind.touch,
-                        PointerDeviceKind.mouse,
-                        PointerDeviceKind.trackpad,
-                      },
-                    ),
-                    child: ListView.separated(
-                      scrollDirection: Axis.horizontal,
-                      physics: const BouncingScrollPhysics(),
-                      itemCount: feedbacks.length,
-                      separatorBuilder: (_, _) => const SizedBox(width: 20),
-                      itemBuilder: (context, index) =>
-                          _buildFeedbackCard(feedbacks[index]),
-                    ),
-                  ),
-                ),
                 const SizedBox(height: 20),
               ],
             ),
