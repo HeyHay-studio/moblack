@@ -42,9 +42,7 @@ class FooterSection extends StatelessWidget {
           const SizedBox(height: 40),
           const Divider(color: Colors.white12),
           const SizedBox(height: 40),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            mainAxisSize: MainAxisSize.max,
+          Column(
             children: [
               const Text(
                 '© 2026 MOBLACK. ALL RIGHTS RESERVED.',
@@ -54,26 +52,37 @@ class FooterSection extends StatelessWidget {
                   letterSpacing: 2,
                 ),
               ),
-              if (isDesktop)
-                Row(
-                  children: [
-                    TextButton(
-                      onPressed: () {},
-                      child: const Text(
-                        'Privacy Policy',
-                        style: TextStyle(color: Colors.white30),
-                      ),
+              SizedBox(height: 28),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: .center,
+                children: [
+                  Text(
+                    'Developed By:',
+                    style: GoogleFonts.bellefair(
+                      color: Colors.white30,
+                      fontSize: 10,
+                      letterSpacing: 2,
                     ),
-                    const SizedBox(width: 32),
-                    TextButton(
-                      onPressed: () {},
-                      child: const Text(
-                        'Terms of Service',
-                        style: TextStyle(color: Colors.white30),
-                      ),
+                  ),
+                  Text(
+                    'HeyHay Studio',
+                    style: GoogleFonts.bellefair(
+                      color: Colors.white54,
+                      fontSize: 18,
+                      letterSpacing: 2,
                     ),
-                  ],
-                ),
+                  ),
+                  Text(
+                    '®',
+                    style: GoogleFonts.bellefair(
+                      color: Colors.white30,
+                      fontSize: 10,
+                      letterSpacing: 2,
+                    ),
+                  ),
+                ],
+              ),
             ],
           ),
           if (!isDesktop) const SizedBox(height: 20),
