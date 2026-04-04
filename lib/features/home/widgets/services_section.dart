@@ -46,59 +46,9 @@ class ServicesSection extends StatelessWidget {
                   ],
                 ),
               ),
-              if (isDesktop)
-                TextButton.icon(
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) =>
-                            ServicesPage(dynamicServices: dynamicServices),
-                      ),
-                    );
-                  },
-                  icon: const Text(
-                    'See all services',
-                    style: TextStyle(
-                      color: AppTheme.primaryGold,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  label: const Icon(
-                    Icons.arrow_forward,
-                    color: AppTheme.primaryGold,
-                  ),
-                ),
             ],
           ),
           if (!isDesktop) const SizedBox(height: 24),
-          if (!isDesktop)
-            Align(
-              alignment: Alignment.centerLeft,
-              child: TextButton.icon(
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) =>
-                          ServicesPage(dynamicServices: dynamicServices),
-                    ),
-                  );
-                },
-                icon: const Text(
-                  'See all services',
-                  style: TextStyle(
-                    color: AppTheme.primaryGold,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                label: const Icon(
-                  Icons.arrow_forward,
-                  color: AppTheme.primaryGold,
-                ),
-              ),
-            ),
-          const SizedBox(height: 48),
           LayoutBuilder(
             builder: (context, constraints) {
               if (isDesktop) {
@@ -122,7 +72,11 @@ class ServicesSection extends StatelessWidget {
               } else {
                 return Column(
                   children: dynamicServices
-                      .take(4)
+                      .take(
+                        dynamicServices.length >= 4
+                            ? 4
+                            : dynamicServices.length,
+                      )
                       .map(
                         (s) => Padding(
                           padding: const EdgeInsets.symmetric(vertical: 12),
@@ -199,7 +153,7 @@ class _ServiceCardState extends State<ServiceCard> {
       mediaItems = List<String>.from(widget.serviceData['img'] ?? [])
         ..shuffle();
     }
-    _startSlideshow(mediaItems.length);
+    _startSlideshow();
     super.initState();
   }
 
@@ -210,19 +164,23 @@ class _ServiceCardState extends State<ServiceCard> {
     super.dispose();
   }
 
-  void _startSlideshow(int totalImages) {
-    _timer = Timer.periodic(Duration(seconds: Random().nextInt(4) + 1), (
-      timer,
-    ) {
+  void _startSlideshow() {
+    if (!mounted) return;
+
+    // Random duration between 2 and 5 seconds
+    final nextDuration = Duration(seconds: Random().nextInt(4) + 2);
+
+    _timer = Timer(nextDuration, () async {
       if (_pageController.hasClients) {
         int nextPage = (_pageController.page?.toInt() ?? 0) + 1;
-        if (nextPage >= totalImages) nextPage = 0;
+        if (nextPage >= mediaItems.length) nextPage = 0;
 
-        _pageController.animateToPage(
+        await _pageController.animateToPage(
           nextPage,
-          duration: Duration(seconds: Random().nextInt(3) + 1),
-          curve: Curves.easeInOutCirc,
+          duration: const Duration(milliseconds: 800),
+          curve: Curves.easeInOutCubic,
         );
+        _startSlideshow(); // Schedule the next random jump
       }
     });
   }
@@ -276,11 +234,19 @@ class _ServiceCardState extends State<ServiceCard> {
                       if (item.type == CloudinaryResourceType.video) {
                         return VideoProviderWidget(videoUrl: item.url);
                       }
-                      return Image.network(item.url, fit: BoxFit.cover);
+                      return Image.network(
+                        item.url,
+                        fit: BoxFit.cover,
+                        cacheHeight: 800,
+                      );
                     }
 
                     // Fallback for static image strings
-                    return Image.network(item as String, fit: BoxFit.cover);
+                    return Image.network(
+                      item as String,
+                      fit: BoxFit.cover,
+                      cacheHeight: 800,
+                    );
                   },
                 ),
               ),

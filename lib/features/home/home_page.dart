@@ -1,4 +1,5 @@
 import 'dart:async';
+
 import 'package:flutter/material.dart';
 
 import '../../core/constants.dart';
@@ -39,14 +40,14 @@ class _HomePageState extends State<HomePage> {
   Map<String, List<ProductRecord>> _groupedProducts = {};
   bool _isLoading = true;
   bool _hasError = false;
-  
+
   StreamSubscription<Map<String, List<ProductRecord>>>? _productSub;
 
   @override
   void initState() {
     super.initState();
     _fetchMasterData();
-    
+
     _productSub = ProductService.streamGroupedProducts().listen(
       (products) {
         if (mounted) {
@@ -83,7 +84,7 @@ class _HomePageState extends State<HomePage> {
           _allResources = assets;
           _groupedResources = CloudinaryService.groupByFolder(assets);
           _isLoading = false;
-          _hasError = false; 
+          _hasError = false;
         });
       }
     } catch (e) {
@@ -183,8 +184,7 @@ class _HomePageState extends State<HomePage> {
     final dynamicServices = _getDynamicServices();
     final galleryImages = _getGalleryImages();
 
-    final productImages =
-        _groupedProducts[AppConstants.productFolderKey] ?? [];
+    final productImages = _groupedProducts[AppConstants.productFolderKey] ?? [];
     final productVideos =
         _groupedProducts[AppConstants.productVideoFolderKey] ?? [];
     final productMedia = [...productImages, ...productVideos]..shuffle();

@@ -1,8 +1,10 @@
 import 'dart:ui';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
+import 'package:moblack/core/constants.dart';
 import 'package:moblack/core/theme.dart';
 
 class BookingSection extends StatefulWidget {
@@ -35,6 +37,13 @@ class _BookingSectionState extends State<BookingSection> {
   ];
 
   String? _selectedTime;
+  String? _selectedService;
+  bool _isSubmitting = false;
+
+  final _firstNameCtrl = TextEditingController();
+  final _lastNameCtrl = TextEditingController();
+  final _phoneCtrl = TextEditingController();
+  final _emailCtrl = TextEditingController();
 
   int get _daysInMonth =>
       DateUtils.getDaysInMonth(_focusedDate.year, _focusedDate.month);
@@ -51,6 +60,85 @@ class _BookingSectionState extends State<BookingSection> {
         1,
       );
     });
+  }
+
+  @override
+  void dispose() {
+    _firstNameCtrl.dispose();
+    _lastNameCtrl.dispose();
+    _phoneCtrl.dispose();
+    _emailCtrl.dispose();
+    super.dispose();
+  }
+
+  Future<void> _submitBooking() async {
+    if (_firstNameCtrl.text.trim().isEmpty || _emailCtrl.text.trim().isEmpty) {
+      _showSnack('Please provide your name and email.', isError: true);
+      return;
+    }
+    if (_selectedService == null) {
+      _showSnack('Please select a service type.', isError: true);
+      return;
+    }
+    if (_selectedTime == null) {
+      _showSnack('Please select an appointment time.', isError: true);
+      return;
+    }
+
+    setState(() => _isSubmitting = true);
+    try {
+      FirebaseFirestore.instance.collection(AppConstants.firestoreBooking).add({
+        'firstName': _firstNameCtrl.text.trim(),
+        'lastName': _lastNameCtrl.text.trim(),
+        'phone': _phoneCtrl.text.trim(),
+        'email': _emailCtrl.text.trim(),
+        'serviceType': _selectedService,
+        'bookingDate': _selectedDate,
+        'bookingTime': _selectedTime,
+        'status': 'pending',
+        'createdAt': FieldValue.serverTimestamp(),
+      });
+
+      final fullName =
+          '${_firstNameCtrl.text.trim()} ${_lastNameCtrl.text.trim()}';
+
+      FirebaseFirestore.instance
+          .collection(AppConstants.firestoreNotification)
+          .add({
+            'title': 'New Booking Request',
+            'body': '$fullName booked $_selectedService at $_selectedTime,',
+            'email': _emailCtrl.text.trim(),
+            'phone': _phoneCtrl.text.trim(),
+            'type': 'booking',
+            'isRead': false,
+            'bookingDate': _selectedDate.toIso8601String(),
+            'createdAt': FieldValue.serverTimestamp(),
+          });
+
+      _showSnack('Booking requested successfully! We will contact you soon.');
+      setState(() {
+        _firstNameCtrl.clear();
+        _lastNameCtrl.clear();
+        _phoneCtrl.clear();
+        _emailCtrl.clear();
+        _selectedService = null;
+        _selectedTime = null;
+      });
+    } catch (e) {
+      _showSnack('Encountered an error. Please try again.', isError: true);
+    } finally {
+      if (mounted) setState(() => _isSubmitting = false);
+    }
+  }
+
+  void _showSnack(String msg, {bool isError = false}) {
+    if (!mounted) return;
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(msg),
+        backgroundColor: isError ? Colors.redAccent : Colors.greenAccent,
+      ),
+    );
   }
 
   @override
@@ -289,30 +377,42 @@ class _BookingSectionState extends State<BookingSection> {
             ),
           ),
           const SizedBox(height: 32),
-          _buildFormField('First Name', 'John'),
+          _buildFormField('First Name', 'John', _firstNameCtrl),
           const SizedBox(height: 24),
-          _buildFormField('Last Name', 'Doe'),
+          _buildFormField('Last Name', 'Doe', _lastNameCtrl),
           const SizedBox(height: 24),
-          _buildFormField('Phone Number', '+1 234 567 890', isPhone: true),
+          _buildFormField(
+            'Phone Number',
+            '+1 234 567 890',
+            _phoneCtrl,
+            isPhone: true,
+          ),
           const SizedBox(height: 24),
-          _buildFormField('Email', 'john@example.com'),
+          _buildFormField('Email', 'john@example.com', _emailCtrl),
+          const SizedBox(height: 24),
+          _buildServiceDropdown(),
           const SizedBox(height: 40),
           SizedBox(
             width: double.infinity,
             height: 60,
             child: ElevatedButton(
-              onPressed: () {},
+              onPressed: _isSubmitting ? null : _submitBooking,
               style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.white,
+                backgroundColor: AppTheme.primaryGold,
                 foregroundColor: const Color(0xFF2D2D2D),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(20),
                 ),
               ),
-              child: const Text(
-                'Book appointment',
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-              ),
+              child: _isSubmitting
+                  ? const CircularProgressIndicator(color: Colors.black)
+                  : const Text(
+                      'Request Booking',
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
             ),
           ),
         ],
@@ -320,7 +420,51 @@ class _BookingSectionState extends State<BookingSection> {
     );
   }
 
-  Widget _buildFormField(String label, String hint, {bool isPhone = false}) {
+  Widget _buildServiceDropdown() {
+    final servicesList = AppConstants.services
+        .map((s) => s['title'] as String)
+        .toList();
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const Text(
+          'SERVICE TYPE',
+          style: TextStyle(
+            color: Colors.white54,
+            fontSize: 10,
+            letterSpacing: 2,
+          ),
+        ),
+        DropdownButtonFormField<String>(
+          initialValue: _selectedService,
+          items: servicesList
+              .map((srv) => DropdownMenuItem(value: srv, child: Text(srv)))
+              .toList(),
+          onChanged: (val) => setState(() => _selectedService = val),
+          dropdownColor: const Color(0xFF2D2D2D),
+          style: const TextStyle(color: Colors.white, fontSize: 18),
+          decoration: const InputDecoration(
+            hintText: 'Select required service',
+            hintStyle: TextStyle(color: Colors.white24, fontSize: 18),
+            enabledBorder: UnderlineInputBorder(
+              borderSide: BorderSide(color: Colors.white12),
+            ),
+            focusedBorder: UnderlineInputBorder(
+              borderSide: BorderSide(color: Colors.white),
+            ),
+            contentPadding: EdgeInsets.symmetric(vertical: 8),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildFormField(
+    String label,
+    String hint,
+    TextEditingController ctrl, {
+    bool isPhone = false,
+  }) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -333,7 +477,10 @@ class _BookingSectionState extends State<BookingSection> {
           ),
         ),
         TextField(
-          keyboardType: isPhone ? TextInputType.phone : TextInputType.text,
+          controller: ctrl,
+          keyboardType: isPhone
+              ? TextInputType.phone
+              : TextInputType.emailAddress,
           style: const TextStyle(color: Colors.white, fontSize: 18),
           decoration: InputDecoration(
             hintText: hint,
