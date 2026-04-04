@@ -283,23 +283,31 @@ class _HeroSectionState extends State<HeroSection> {
     );
   }
 
-  //Todo: have to clear the box shadow around the card
   Widget _buildStatCard(String subtitle, String title) {
+    const double cardRadius = 24.0; // Define once to keep it consistent
+
     return ClipRRect(
-      child: BackdropFilter.grouped(
+      borderRadius: BorderRadius.circular(cardRadius),
+      // 1. Added this to fix the "square" blur/shadow
+      child: BackdropFilter(
+        // Note: Use BackdropFilter unless you specifically need the 'grouped' experimental feature
         filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
         child: GestureDetector(
           onTap: () {
-            widget.onNavTap!("products");
+            widget.onNavTap?.call(
+              "products",
+            ); // 2. Safer way to call a nullable function
           },
           child: Container(
             padding: const EdgeInsets.all(20),
             decoration: BoxDecoration(
               color: Colors.white.withValues(alpha: 0.1),
               border: Border.all(color: Colors.white.withValues(alpha: 0.2)),
-              borderRadius: BorderRadius.circular(24),
+              borderRadius: BorderRadius.circular(cardRadius),
             ),
             child: Column(
+              mainAxisSize: MainAxisSize.min,
+              // Added to keep card tight to content
               children: [
                 Text(
                   subtitle.toUpperCase(),
@@ -311,7 +319,7 @@ class _HeroSectionState extends State<HeroSection> {
                 ),
                 const SizedBox(height: 8),
                 Row(
-                  mainAxisSize: .min,
+                  mainAxisSize: MainAxisSize.min,
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
@@ -322,7 +330,7 @@ class _HeroSectionState extends State<HeroSection> {
                         fontWeight: FontWeight.bold,
                       ),
                     ),
-                    SizedBox(width: 20),
+                    const SizedBox(width: 20),
                     Container(
                       padding: const EdgeInsets.all(4),
                       decoration: BoxDecoration(
