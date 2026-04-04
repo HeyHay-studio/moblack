@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -57,6 +58,14 @@ class _ProductsPageState extends State<ProductsPage>
   }
 
   Future<void> _buyNow(ProductRecord resource) async {
+    // Notify admin about the inquiry
+    FirebaseFirestore.instance.collection(AppConstants.firestoreNotification).add({
+      'title': '🛍️ Product Inquiry',
+      'body': 'A customer is interested in "${resource.title}"',
+      'isRead': false,
+      'createdAt': FieldValue.serverTimestamp(),
+    });
+
     final url = AppConstants.getWhatsAppBuyUrl(
       resource.publicId,
       resource.type == MediaType.video,

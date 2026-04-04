@@ -131,6 +131,11 @@ class _ServiceCardState extends State<ServiceCard> {
   @override
   void initState() {
     super.initState();
+    _initMedia();
+    _startSlideshow();
+  }
+
+  void _initMedia() {
     final dynamicMedia = widget.serviceData['media'] as List?;
     if (dynamicMedia != null && dynamicMedia.isNotEmpty) {
       final allResources = List<CloudinaryResource>.from(dynamicMedia);
@@ -153,7 +158,18 @@ class _ServiceCardState extends State<ServiceCard> {
       mediaItems = List<String>.from(widget.serviceData['img'] ?? [])
         ..shuffle();
     }
-    _startSlideshow();
+  }
+
+  @override
+  void didUpdateWidget(ServiceCard oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    // Check if media or images have changed to avoid unnecessary re-shuffles
+    if (widget.serviceData['media'] != oldWidget.serviceData['media'] ||
+        widget.serviceData['img'] != oldWidget.serviceData['img']) {
+      setState(() {
+        _initMedia();
+      });
+    }
   }
 
   @override
