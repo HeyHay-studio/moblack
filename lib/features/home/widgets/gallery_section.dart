@@ -1,17 +1,22 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../../../../core/constants.dart';
+import '../../../../core/services/cloudinary_service.dart';
 import '../../../../core/theme.dart';
+import '../../../core/services/communication_service.dart';
+import 'video_provider_widget.dart';
 
 class GallerySection extends StatefulWidget {
   final bool isDesktop;
-  final List<String> dynamicImages;
+  final List<CloudinaryResource> dynamicMedia;
 
   const GallerySection({
     super.key,
     required this.isDesktop,
-    required this.dynamicImages,
+    required this.dynamicMedia,
   });
 
   @override
@@ -21,19 +26,64 @@ class GallerySection extends StatefulWidget {
 class _GallerySectionState extends State<GallerySection>
     with SingleTickerProviderStateMixin {
   late AnimationController _controller;
+  late List<CloudinaryResource> _displayMedia;
+  Timer? _rotationTimer;
 
   @override
   void initState() {
     super.initState();
+    _displayMedia = _getInitialMedia();
     _controller = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 1500),
+      duration: const Duration(milliseconds: 1800),
     );
     _controller.forward();
+    _startRotation();
+  }
+
+  List<CloudinaryResource> _getInitialMedia() {
+    if (widget.dynamicMedia.isNotEmpty) {
+      return List.from(widget.dynamicMedia)..shuffle();
+    }
+    // Fallback to static images wrapped in CloudinaryResource
+    return AppConstants.galleryImages
+        .map(
+          (url) => CloudinaryResource(
+            url: url,
+            type: CloudinaryResourceType.image,
+            publicId: 'fallback',
+          ),
+        )
+        .toList()
+      ..shuffle();
+  }
+
+  void _startRotation() {
+    _rotationTimer?.cancel();
+    _rotationTimer = Timer.periodic(const Duration(seconds: 6), (timer) {
+      if (mounted) {
+        setState(() {
+          _displayMedia.shuffle();
+          _controller.reset();
+          _controller.forward();
+        });
+      }
+    });
+  }
+
+  @override
+  void didUpdateWidget(GallerySection oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (widget.dynamicMedia != oldWidget.dynamicMedia) {
+      setState(() {
+        _displayMedia = _getInitialMedia();
+      });
+    }
   }
 
   @override
   void dispose() {
+    _rotationTimer?.cancel();
     _controller.dispose();
     super.dispose();
   }
@@ -82,14 +132,10 @@ class _GallerySectionState extends State<GallerySection>
   }
 
   Widget _buildGalleryGrid() {
-    final assets = widget.dynamicImages.isNotEmpty
-        ? widget.dynamicImages
-        : AppConstants.galleryImages;
-
-    if (assets.isEmpty) {
+    if (_displayMedia.isEmpty) {
       return const Center(
         child: Text(
-          'No images found in your gallery.',
+          'No media found in your gallery.',
           style: TextStyle(color: Colors.white70),
         ),
       );
@@ -104,14 +150,14 @@ class _GallerySectionState extends State<GallerySection>
         crossAxisSpacing: 16,
         childAspectRatio: 0.8,
       ),
-      itemCount: assets.length > 8 ? 8 : assets.length,
+      itemCount: _displayMedia.length > 8 ? 8 : _displayMedia.length,
       itemBuilder: (context, index) {
-        return _buildGalleryItem(assets[index], index);
+        return _buildGalleryItem(_displayMedia[index], index);
       },
     );
   }
 
-  Widget _buildGalleryItem(String url, int index) {
+  Widget _buildGalleryItem(CloudinaryResource resource, int index) {
     return AnimatedBuilder(
       animation: _controller,
       builder: (context, child) {
@@ -133,20 +179,20 @@ class _GallerySectionState extends State<GallerySection>
           ),
         );
       },
-      child: _GalleryItem(url: url),
+      child: _GalleryItem(resource: resource),
     );
   }
 
   Widget _buildViewMoreBtn() {
     return OutlinedButton(
-      onPressed: () {},
+      onPressed: () => CommunicationService.launchTikTok(),
       style: OutlinedButton.styleFrom(
         foregroundColor: AppTheme.primaryGold,
         side: const BorderSide(color: AppTheme.primaryGold, width: 1.5),
         padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 20),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
       ),
-      child: Text(
+      child: const Text(
         'VIEW ALL REELS',
         style: TextStyle(fontWeight: FontWeight.bold, letterSpacing: 2),
       ),
@@ -155,9 +201,9 @@ class _GallerySectionState extends State<GallerySection>
 }
 
 class _GalleryItem extends StatefulWidget {
-  final String url;
+  final CloudinaryResource resource;
 
-  const _GalleryItem({required this.url});
+  const _GalleryItem({required this.resource});
 
   @override
   State<_GalleryItem> createState() => __GalleryItemState();
@@ -184,26 +230,29 @@ class __GalleryItemState extends State<_GalleryItem> {
           child: Stack(
             fit: StackFit.expand,
             children: [
-              Image.network(
-                widget.url,
-                fit: BoxFit.cover,
-                loadingBuilder: (context, child, progress) {
-                  if (progress == null) return child;
-                  return Container(
-                    color: Colors.white10,
-                    child: const Center(
-                      child: SizedBox(
-                        width: 20,
-                        height: 20,
-                        child: CircularProgressIndicator(
-                          strokeWidth: 2,
-                          color: AppTheme.primaryGold,
+              if (widget.resource.type == CloudinaryResourceType.video)
+                VideoProviderWidget(videoUrl: widget.resource.url)
+              else
+                Image.network(
+                  widget.resource.url,
+                  fit: BoxFit.cover,
+                  loadingBuilder: (context, child, progress) {
+                    if (progress == null) return child;
+                    return Container(
+                      color: Colors.white10,
+                      child: const Center(
+                        child: SizedBox(
+                          width: 20,
+                          height: 20,
+                          child: CircularProgressIndicator(
+                            strokeWidth: 2,
+                            color: AppTheme.primaryGold,
+                          ),
                         ),
                       ),
-                    ),
-                  );
-                },
-              ),
+                    );
+                  },
+                ),
               // Gradient Overlay on hover
               AnimatedOpacity(
                 duration: const Duration(milliseconds: 300),

@@ -169,11 +169,12 @@ class _HomePageState extends State<HomePage> {
     }).toList();
   }
 
-  List<String> _getGalleryImages() {
-    // Collect all unique images fetched
+  List<CloudinaryResource> _getGalleryMedia() {
+    // Collect all unique images and videos fetched
     return _allResources
-        .where((r) => r.type == CloudinaryResourceType.image)
-        .map((r) => r.url)
+        .where((r) =>
+            r.type == CloudinaryResourceType.image ||
+            r.type == CloudinaryResourceType.video)
         .toList();
   }
 
@@ -182,7 +183,7 @@ class _HomePageState extends State<HomePage> {
     bool isDesktop = MediaQuery.of(context).size.width >= 1024;
 
     final dynamicServices = _getDynamicServices();
-    final galleryImages = _getGalleryImages();
+    final galleryMedia = _getGalleryMedia();
 
     final productImages = _groupedProducts[AppConstants.productFolderKey] ?? [];
     final productVideos =
@@ -217,7 +218,7 @@ class _HomePageState extends State<HomePage> {
                 GallerySection(
                   key: galleryKey,
                   isDesktop: isDesktop,
-                  dynamicImages: galleryImages,
+                  dynamicMedia: galleryMedia,
                 ),
                 FooterSection(key: aboutKey, isDesktop: isDesktop),
               ],

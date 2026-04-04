@@ -59,12 +59,15 @@ class _ProductsPageState extends State<ProductsPage>
 
   Future<void> _buyNow(ProductRecord resource) async {
     // Notify admin about the inquiry
-    FirebaseFirestore.instance.collection(AppConstants.firestoreNotification).add({
-      'title': '🛍️ Product Inquiry',
-      'body': 'A customer is interested in "${resource.title}"',
-      'isRead': false,
-      'createdAt': FieldValue.serverTimestamp(),
-    });
+    FirebaseFirestore.instance
+        .collection(AppConstants.firestoreNotification)
+        .add({
+          'title': '🛍️ Product Inquiry',
+          'body': 'A customer is interested in "${resource.title}"',
+          'productId': resource.publicId,
+          'isRead': false,
+          'createdAt': FieldValue.serverTimestamp(),
+        });
 
     final url = AppConstants.getWhatsAppBuyUrl(
       resource.publicId,
