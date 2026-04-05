@@ -25,6 +25,16 @@ class ProductRecord {
     required this.createdAt,
   });
 
+  String? get thumbnailUrl {
+    if (type == MediaType.video) {
+      return url.replaceFirst(
+        RegExp(r'\.(mp4|mov|avi|webm|mkv)$', caseSensitive: false),
+        '.jpg',
+      );
+    }
+    return null;
+  }
+
   factory ProductRecord.fromFirestore(DocumentSnapshot doc) {
     final data = doc.data() as Map<String, dynamic>;
     return ProductRecord(

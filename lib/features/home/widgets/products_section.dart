@@ -304,68 +304,80 @@ class __ProductCardState extends State<_ProductCard> {
             fit: StackFit.expand,
             children: [
               if (widget.resource.type == MediaType.video)
-                VideoProviderWidget(videoUrl: widget.resource.url)
+                VideoProviderWidget(
+                  videoUrl: widget.resource.url,
+                  thumbnailUrl: widget.resource.thumbnailUrl,
+                )
               else
                 Image.network(widget.resource.url, fit: BoxFit.cover),
               Positioned(
                 bottom: 0,
                 left: 0,
                 right: 0,
-                child: Container(
-                  padding: const EdgeInsets.all(20),
-                  decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                      colors: [Colors.black87, Colors.transparent],
-                      begin: Alignment.bottomCenter,
-                      end: Alignment.topCenter,
+                child: IgnorePointer(
+                  child: Container(
+                    padding: const EdgeInsets.all(20),
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        colors: [Colors.black87, Colors.transparent],
+                        begin: Alignment.bottomCenter,
+                        end: Alignment.topCenter,
+                      ),
                     ),
-                  ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const Text(
-                        'PREMIUM COLLECTION',
-                        style: TextStyle(
-                          color: AppTheme.primaryGold,
-                          fontSize: 10,
-                          fontWeight: FontWeight.bold,
-                          letterSpacing: 1.5,
-                        ),
-                      ),
-                      const SizedBox(height: 4),
-                      Text(
-                        widget.resource.title,
-                        style: const TextStyle(
-                          color: Colors.white,
-                          fontSize: 16,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                      const SizedBox(height: 4),
-                      Text(
-                        widget.resource.price != null
-                            ? 'GH₵ ${widget.resource.price!.toStringAsFixed(0)}'
-                            : 'Consult for details',
-                        style: const TextStyle(
-                          color: Colors.white70,
-                          fontSize: 11,
-                          fontStyle: FontStyle.italic,
-                        ),
-                      ),
-                      if (!widget.resource.isAvailable)
-                        Container(
-                          margin: const EdgeInsets.only(top: 8),
-                          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                          decoration: BoxDecoration(
-                            color: Colors.redAccent.withValues(alpha: 0.8),
-                            borderRadius: BorderRadius.circular(4),
-                          ),
-                          child: const Text(
-                            'UNAVAILABLE',
-                            style: TextStyle(color: Colors.white, fontSize: 10, fontWeight: FontWeight.bold),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Text(
+                          'PREMIUM COLLECTION',
+                          style: TextStyle(
+                            color: AppTheme.primaryGold,
+                            fontSize: 10,
+                            fontWeight: FontWeight.bold,
+                            letterSpacing: 1.5,
                           ),
                         ),
-                    ],
+                        const SizedBox(height: 4),
+                        Text(
+                          widget.resource.title,
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 16,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                        const SizedBox(height: 4),
+                        Text(
+                          widget.resource.price != null
+                              ? 'GH₵ ${widget.resource.price!.toStringAsFixed(0)}'
+                              : 'Consult for details',
+                          style: const TextStyle(
+                            color: Colors.white70,
+                            fontSize: 11,
+                            fontStyle: FontStyle.italic,
+                          ),
+                        ),
+                        if (!widget.resource.isAvailable)
+                          Container(
+                            margin: const EdgeInsets.only(top: 8),
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 8,
+                              vertical: 4,
+                            ),
+                            decoration: BoxDecoration(
+                              color: Colors.redAccent.withValues(alpha: 0.8),
+                              borderRadius: BorderRadius.circular(4),
+                            ),
+                            child: const Text(
+                              'UNAVAILABLE',
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 10,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
+                      ],
+                    ),
                   ),
                 ),
               ),

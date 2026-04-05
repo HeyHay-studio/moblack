@@ -231,7 +231,10 @@ class __GalleryItemState extends State<_GalleryItem> {
             fit: StackFit.expand,
             children: [
               if (widget.resource.type == CloudinaryResourceType.video)
-                VideoProviderWidget(videoUrl: widget.resource.url)
+                VideoProviderWidget(
+                  videoUrl: widget.resource.url,
+                  thumbnailUrl: widget.resource.thumbnailUrl,
+                )
               else
                 Image.network(
                   widget.resource.url,
@@ -257,22 +260,27 @@ class __GalleryItemState extends State<_GalleryItem> {
               AnimatedOpacity(
                 duration: const Duration(milliseconds: 300),
                 opacity: _isHovered ? 1.0 : 0.0,
-                child: Container(
-                  decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                      colors: [Colors.black.withAlpha(150), Colors.transparent],
-                      begin: Alignment.bottomCenter,
-                      end: Alignment.topCenter,
+                child: IgnorePointer(
+                  child: Container(
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        colors: [
+                          Colors.black.withAlpha(150),
+                          Colors.transparent,
+                        ],
+                        begin: Alignment.bottomCenter,
+                        end: Alignment.topCenter,
+                      ),
                     ),
-                  ),
-                  child: Align(
-                    alignment: AlignmentGeometry.topStart,
-                    child: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Image.asset(
-                        "assets/images/logo_removed.png",
-                        width: 30,
-                        height: 30,
+                    child: Align(
+                      alignment: AlignmentGeometry.topStart,
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Image.asset(
+                          "assets/images/logo_removed.png",
+                          width: 30,
+                          height: 30,
+                        ),
                       ),
                     ),
                   ),

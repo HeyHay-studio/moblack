@@ -20,6 +20,17 @@ class CloudinaryResource {
     required this.publicId,
     this.assetFolder,
   });
+
+  String? get thumbnailUrl {
+    if (type == CloudinaryResourceType.video) {
+      // Cloudinary handles thumbnail generation for videos by changing extension to .jpg
+      return url.replaceFirst(
+        RegExp(r'\.(mp4|mov|avi|webm|mkv)$', caseSensitive: false),
+        '.jpg',
+      );
+    }
+    return null;
+  }
 }
 
 class CloudinaryService {

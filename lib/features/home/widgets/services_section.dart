@@ -247,7 +247,10 @@ class _ServiceCardState extends State<ServiceCard> {
 
                     if (item is CloudinaryResource) {
                       if (item.type == CloudinaryResourceType.video) {
-                        return VideoProviderWidget(videoUrl: item.url);
+                        return VideoProviderWidget(
+                          videoUrl: item.url,
+                          thumbnailUrl: item.thumbnailUrl,
+                        );
                       }
                       return Image.network(
                         item.url,
@@ -266,41 +269,45 @@ class _ServiceCardState extends State<ServiceCard> {
                 ),
               ),
             ),
-            Container(
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(40),
-                gradient: LinearGradient(
-                  colors: [
-                    Colors.black.withValues(alpha: _isHovered ? 0.8 : 0.6),
-                    Colors.transparent,
-                  ],
-                  begin: Alignment.bottomCenter,
-                  end: Alignment.topCenter,
+            IgnorePointer(
+              child: Container(
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(40),
+                  gradient: LinearGradient(
+                    colors: [
+                      Colors.black.withValues(alpha: _isHovered ? 0.8 : 0.6),
+                      Colors.transparent,
+                    ],
+                    begin: Alignment.bottomCenter,
+                    end: Alignment.topCenter,
+                  ),
                 ),
               ),
             ),
             Positioned(
               top: 24,
               left: 24,
-              child: Container(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 24,
-                  vertical: 8,
-                ),
-                decoration: BoxDecoration(
-                  color: Colors.white.withValues(alpha: 0.95),
-                  borderRadius: BorderRadius.circular(30),
-                  boxShadow: const [
-                    BoxShadow(color: Colors.black12, blurRadius: 10),
-                  ],
-                ),
-                child: Text(
-                  widget.serviceData['title']!.toUpperCase(),
-                  style: const TextStyle(
-                    fontSize: 12,
-                    fontWeight: FontWeight.bold,
-                    color: AppTheme.primaryGold,
-                    letterSpacing: 1.5,
+              child: IgnorePointer(
+                child: Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 24,
+                    vertical: 8,
+                  ),
+                  decoration: BoxDecoration(
+                    color: Colors.white.withValues(alpha: 0.95),
+                    borderRadius: BorderRadius.circular(30),
+                    boxShadow: const [
+                      BoxShadow(color: Colors.black12, blurRadius: 10),
+                    ],
+                  ),
+                  child: Text(
+                    widget.serviceData['title']!.toUpperCase(),
+                    style: const TextStyle(
+                      fontSize: 12,
+                      fontWeight: FontWeight.bold,
+                      color: AppTheme.primaryGold,
+                      letterSpacing: 1.5,
+                    ),
                   ),
                 ),
               ),

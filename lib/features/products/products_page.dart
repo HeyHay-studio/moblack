@@ -260,19 +260,24 @@ class _ProductGridCardState extends State<_ProductGridCard> {
                   fit: StackFit.expand,
                   children: [
                     if (widget.resource.type == MediaType.video)
-                      VideoProviderWidget(videoUrl: widget.resource.url)
+                      VideoProviderWidget(
+                        videoUrl: widget.resource.url,
+                        thumbnailUrl: widget.resource.thumbnailUrl,
+                      )
                     else
                       Image.network(widget.resource.url, fit: BoxFit.cover),
 
                     if (_isHovered)
-                      Align(
-                        alignment: AlignmentGeometry.topStart,
-                        child: Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Image.asset(
-                            "assets/images/logo_removed.png",
-                            width: 30,
-                            height: 30,
+                      IgnorePointer(
+                        child: Align(
+                          alignment: AlignmentGeometry.topStart,
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Image.asset(
+                              "assets/images/logo_removed.png",
+                              width: 30,
+                              height: 30,
+                            ),
                           ),
                         ),
                       ),
