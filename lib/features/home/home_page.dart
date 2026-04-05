@@ -3,7 +3,9 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 
 import '../../core/constants.dart';
+import '../../core/models/category_record.dart';
 import '../../core/models/product_record.dart';
+import '../../core/services/category_service.dart';
 import '../../core/services/cloudinary_service.dart';
 import '../../core/services/product_service.dart';
 import '../../core/theme.dart';
@@ -38,28 +40,33 @@ class _HomePageState extends State<HomePage> {
   List<CloudinaryResource> _allResources = [];
   Map<String, List<CloudinaryResource>> _groupedResources = {};
   Map<String, List<ProductRecord>> _groupedProducts = {};
+  List<CategoryRecord> _dynamicCategories = [];
   bool _isLoading = true;
   bool _hasError = false;
 
   StreamSubscription<Map<String, List<ProductRecord>>>? _productSub;
+  StreamSubscription<List<CategoryRecord>>? _categorySub;
 
   @override
   void initState() {
     super.initState();
     _fetchMasterData();
 
-    _productSub = ProductService.streamGroupedProducts().listen(
-      (products) {
-        if (mounted) {
-          setState(() {
-            _groupedProducts = products;
-          });
-        }
-      },
-      onError: (e) {
-        print('=== PRODUCT STREAM ERROR: $e');
-      },
-    );
+    _productSub = ProductService.streamGroupedProducts().listen((products) {
+      if (mounted) {
+        setState(() {
+          _groupedProducts = products;
+        });
+      }
+    }, onError: (e) {});
+
+    _categorySub = CategoryService.streamCategories().listen((categories) {
+      if (mounted) {
+        setState(() {
+          _dynamicCategories = categories;
+        });
+      }
+    }, onError: (e) {});
   }
 
   Future<void> _fetchMasterData() async {
@@ -87,8 +94,7 @@ class _HomePageState extends State<HomePage> {
           _hasError = false;
         });
       }
-    } catch (e) {
-      print('=== FETCH ERROR: $e');
+    } catch (_) {
       if (mounted) {
         setState(() {
           _isLoading = false;
@@ -101,6 +107,7 @@ class _HomePageState extends State<HomePage> {
   @override
   void dispose() {
     _productSub?.cancel();
+    _categorySub?.cancel();
     scrollController.dispose();
     super.dispose();
   }
@@ -150,7 +157,16 @@ class _HomePageState extends State<HomePage> {
   }
 
   List<Map<String, dynamic>> _getDynamicServices() {
-    return AppConstants.services.map((service) {
+    // If we have dynamic categories from Firestore, use them.
+    // Otherwise fallback to hardcoded list (useful for initial load or offline).
+    final sourceList = _dynamicCategories.isNotEmpty
+        ? _dynamicCategories
+              .where((c) => c.type == 'service') // ONLY SHOW SERVICES HERE
+              .map((c) => c.toLegacyMap())
+              .toList()
+        : AppConstants.services;
+
+    return sourceList.map((service) {
       final imgFolder = service['folderKey'];
       final videoFolder = service['videoFolderKey'];
 
@@ -172,9 +188,11 @@ class _HomePageState extends State<HomePage> {
   List<CloudinaryResource> _getGalleryMedia() {
     // Collect all unique images and videos fetched
     return _allResources
-        .where((r) =>
-            r.type == CloudinaryResourceType.image ||
-            r.type == CloudinaryResourceType.video)
+        .where(
+          (r) =>
+              r.type == CloudinaryResourceType.image ||
+              r.type == CloudinaryResourceType.video,
+        )
         .toList();
   }
 

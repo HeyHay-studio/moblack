@@ -22,7 +22,6 @@ class AppConstants {
   // --- CONTACT INFO ---
   static const String phoneNum = '+233555207062';
   static const String gmail = 'beautybymoblack@gmail.com';
-  static const String tiktokUrl = 'https://www.tiktok.com/@beautybymoblack';
 
   // --- CLOUDINARY CONFIG (Optional but Recommended) ---
   // Replace with your Cloudinary Cloud Name if you want to use shortened paths
