@@ -2,7 +2,7 @@ class AppConstants {
   // --- HELPERS ---
   static String getWhatsAppBuyUrl(String publicId, bool isVideo) {
     // Basic sanitization: only allow alphanumeric, dots, and slashes for publicId
-    final sanitizedId = publicId.replaceAll(RegExp(r'[^\w\.\-/]'), '');
+    final sanitizedId = publicId.replaceAll(RegExp(r'[^\w.\-/]'), '');
 
     // Construct the URL using our trusted base to prevent external link injection
     final mediaPath = isVideo ? 'video/upload/' : 'image/upload/';
