@@ -221,10 +221,6 @@ class _ProductsPageState extends State<ProductsPage>
 
     final double total = cartManager.totalPrice;
 
-    final String itemType = cartItems
-        .map((item) => "• ${item.product.type}")
-        .join('\n');
-
     FirebaseFirestore.instance
         .collection(AppConstants.firestoreNotification)
         .add({
