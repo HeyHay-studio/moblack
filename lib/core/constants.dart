@@ -1,19 +1,29 @@
+import 'models/cart_item.dart';
+import 'models/product_record.dart';
+
 class AppConstants {
   // --- HELPERS ---
-  static String getWhatsAppBuyUrl(String publicId, bool isVideo) {
-    // Basic sanitization: only allow alphanumeric, dots, and slashes for publicId
-    final sanitizedId = publicId.replaceAll(RegExp(r'[^\w.\-/]'), '');
+  static String getWhatsAppBuyUrl(List<CartItem> items, double total) {
+    final String itemManifest = items
+        .map((item) {
+          final mediaPath = item.product.type == MediaType.video
+              ? 'video/upload/'
+              : 'image/upload/';
+          final previewUrl =
+              "https://res.cloudinary.com/$cloudName/$mediaPath${item.product.publicId}";
 
-    // Construct the URL using our trusted base to prevent external link injection
-    final mediaPath = isVideo ? 'video/upload/' : 'image/upload/';
-    final trustedBase = "https://res.cloudinary.com/$cloudName/$mediaPath";
-    final fullUrl = "$trustedBase$sanitizedId";
+          return "• ${item.product.title} (x${item.quantity})\n  🔗 View: $previewUrl";
+        })
+        .join("\n\n");
+
+    final sanitizedId = itemManifest.replaceAll(RegExp(r'[^\w.\-/]'), '');
 
     final message =
         "Hello Moblack! ✨\n\n"
-        "I'm interested in this product:\n"
-        "Reference ID: $sanitizedId\n\n"
-        "Product Details: $fullUrl";
+        "I've curated a selection from your Signature Collection:\n\n"
+        "$sanitizedId\n\n"
+        "**Total Inquiry Value: GH₵ ${total.toStringAsFixed(2)}**\n\n"
+        "Please let me know how to proceed with payment.";
 
     final encodedMessage = Uri.encodeComponent(message);
     return "https://wa.me/$phoneNum?text=$encodedMessage";

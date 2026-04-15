@@ -1,9 +1,13 @@
+import 'dart:ui';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../core/constants.dart';
+import '../../core/models/cart_item.dart';
 import '../../core/models/product_record.dart';
 import '../../core/theme.dart';
 import '../home/widgets/video_provider_widget.dart';
@@ -19,6 +23,7 @@ class ProductsPage extends StatefulWidget {
 
 class _ProductsPageState extends State<ProductsPage>
     with TickerProviderStateMixin {
+  final GlobalKey<AnimatedListState> _listKey = GlobalKey<AnimatedListState>();
   late AnimationController _controller;
   late AnimationController _pulseController;
   late List<ProductRecord> _displayMedia;
@@ -57,26 +62,189 @@ class _ProductsPageState extends State<ProductsPage>
     super.dispose();
   }
 
-  Future<void> _buyNow(ProductRecord resource) async {
-    // Notify admin about the inquiry
+  void _handleDeleteItem(int index) {
+    final removedItem = cartManager.removeFromCart(index);
+    _listKey.currentState?.removeItem(
+      index,
+      (context, animation) =>
+          _buildCartItem(removedItem, animation, isRemoving: true),
+      duration: const Duration(milliseconds: 300),
+    );
+  }
+
+  void _showCartBottomSheet(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: AppTheme.backgroundBlack,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+      ),
+      builder: (context) {
+        return ListenableBuilder(
+          listenable: cartManager,
+          builder: (context, child) {
+            if (cartManager.items.isEmpty) {
+              return const SizedBox(
+                height: 200,
+                child: Center(
+                  child: Text(
+                    'Your cart is empty.',
+                    style: TextStyle(color: Colors.white70, fontSize: 16),
+                  ),
+                ),
+              );
+            }
+            return SafeArea(
+              child: Padding(
+                padding: const EdgeInsets.all(24.0),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(
+                      'YOUR CART',
+                      style: GoogleFonts.aboreto(
+                        color: AppTheme.primaryGold,
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    const SizedBox(height: 16),
+                    Flexible(
+                      child: AnimatedList(
+                        key: _listKey,
+                        initialItemCount: cartManager.items.length,
+                        shrinkWrap: true,
+                        itemBuilder: (context, index, animation) {
+                          return _buildCartItem(
+                            cartManager.items[index],
+                            animation,
+                            index: index,
+                          );
+                        },
+                      ),
+                    ),
+                    const Divider(color: Colors.white24, height: 32),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        const Text(
+                          'Total:',
+                          style: TextStyle(color: Colors.white, fontSize: 18),
+                        ),
+                        Text(
+                          'GH₵ ${cartManager.totalPrice.toStringAsFixed(0)}',
+                          style: TextStyle(
+                            color: AppTheme.primaryGold,
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 24),
+                    SizedBox(
+                      width: double.infinity,
+                      child: ElevatedButton(
+                        onPressed: () => _buyNow(),
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: AppTheme.primaryGold,
+                          foregroundColor: Colors.black87,
+                          padding: const EdgeInsets.symmetric(vertical: 16),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(16),
+                          ),
+                        ),
+                        child: const Text(
+                          'PROCEED TO CHECKOUT',
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 16,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            );
+          },
+        );
+      },
+    );
+  }
+
+  Widget _buildCartItem(
+    CartItem item,
+    Animation<double> animation, {
+    bool isRemoving = false,
+    int? index,
+  }) {
+    return SizeTransition(
+      sizeFactor: animation,
+      child: FadeTransition(
+        opacity: animation,
+        child: ListTile(
+          contentPadding: EdgeInsets.zero,
+          title: Text(
+            item.product.title,
+            style: const TextStyle(color: Colors.white),
+          ),
+          subtitle: Text(
+            'GH₵ ${item.product.price?.toStringAsFixed(0) ?? '0'} x ${item.quantity}',
+            style: const TextStyle(color: Colors.white54),
+          ),
+          trailing: isRemoving
+              ? null
+              : IconButton(
+                  icon: const Icon(
+                    Icons.delete_outline,
+                    color: Colors.redAccent,
+                  ),
+                  onPressed: () => _handleDeleteItem(index!),
+                ),
+        ),
+      ),
+    );
+  }
+
+  Future<void> _buyNow() async {
+    if (cartManager.items.isEmpty) return;
+
+    final cartItems = cartManager.items;
+    final String itemSummary = cartItems
+        .map((item) => "• ${item.product.title} (x${item.quantity})")
+        .join("\n");
+
+    final String itemId = cartItems
+        .map((item) => "• ${item.product.publicId} (x${item.quantity})")
+        .join("\n");
+
+    final double total = cartManager.totalPrice;
+
+    final String itemType = cartItems
+        .map((item) => "• ${item.product.type}")
+        .join('\n');
+
     FirebaseFirestore.instance
         .collection(AppConstants.firestoreNotification)
         .add({
           'title': '🛍️ Product Inquiry',
-          'body': 'A customer is interested in "${resource.title}"',
-          'productId': resource.publicId,
+          'body':
+              'A customer is interested in:\n$itemSummary\n'
+              '\nTotal: GH₵ ${total.toStringAsFixed(2)}',
+          'itemCount': cartManager.totalItems,
+          'totalPrice': total,
+          'productId': itemId,
           'isRead': false,
           'createdAt': FieldValue.serverTimestamp(),
         });
 
-    final url = AppConstants.getWhatsAppBuyUrl(
-      resource.publicId,
-      resource.type == MediaType.video,
-    );
+    final url = AppConstants.getWhatsAppBuyUrl(cartItems, total);
     final uri = Uri.parse(url);
     if (await canLaunchUrl(uri)) {
       await launchUrl(uri, mode: LaunchMode.externalApplication);
     }
+    cartManager.clearCart();
   }
 
   Widget _buildAnimatedItem(int index) {
@@ -111,7 +279,28 @@ class _ProductsPageState extends State<ProductsPage>
       },
       child: _ProductGridCard(
         resource: resource,
-        onBuy: () => _buyNow(resource),
+        onBuy: () {
+          cartManager.addToCart(resource);
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              showCloseIcon: true,
+              content: BackdropFilter(
+                filter: ImageFilter.blur(sigmaX: 18, sigmaY: 18),
+                child: Text(
+                  '${resource.title} added to cart!',
+                  textAlign: TextAlign.center,
+                  style: GoogleFonts.fredoka(
+                    letterSpacing: 2,
+                    color: AppTheme.textWhite,
+                    fontSize: 18,
+                  ),
+                ),
+              ),
+              backgroundColor: Colors.transparent,
+              duration: const Duration(seconds: 2),
+            ),
+          );
+        },
       ),
     );
   }
@@ -157,13 +346,38 @@ class _ProductsPageState extends State<ProductsPage>
                   ),
                 ),
                 const SizedBox(height: 8),
-                Text(
-                  'Premium Products',
-                  style: GoogleFonts.playfairDisplay(
-                    color: Colors.white,
-                    fontSize: isDesktop ? 48 : 32,
-                    fontWeight: FontWeight.w600,
-                  ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Flexible(
+                      child: Text(
+                        'Premium Products',
+                        style: GoogleFonts.playfairDisplay(
+                          color: Colors.white,
+                          fontSize: isDesktop ? 48 : 32,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ),
+                    ListenableBuilder(
+                      listenable: cartManager,
+                      builder: (context, child) {
+                        return Badge(
+                          isLabelVisible: cartManager.totalItems > 0,
+                          label: Text(cartManager.totalItems.toString()),
+                          backgroundColor: AppTheme.primaryGold,
+                          textColor: Colors.black,
+                          child: IconButton.filled(
+                            onPressed: () => _showCartBottomSheet(context),
+                            icon: const Icon(
+                              CupertinoIcons.shopping_cart,
+                              size: 18,
+                            ),
+                          ),
+                        );
+                      },
+                    ),
+                  ],
                 ),
                 const SizedBox(height: 32),
 
@@ -361,7 +575,7 @@ class _ProductGridCardState extends State<_ProductGridCard> {
                         ),
                       ),
                       child: const Text(
-                        'PURCHASE INQUIRY',
+                        'ADD TO CART',
                         style: TextStyle(fontWeight: FontWeight.bold),
                       ),
                     ),
