@@ -203,10 +203,33 @@ class _HomePageState extends State<HomePage> {
     final dynamicServices = _getDynamicServices();
     final galleryMedia = _getGalleryMedia();
 
-    final productImages = _groupedProducts[AppConstants.productFolderKey] ?? [];
-    final productVideos =
-        _groupedProducts[AppConstants.productVideoFolderKey] ?? [];
-    final productMedia = [...productImages, ...productVideos]..shuffle();
+    final productHairImages =
+        _groupedProducts[AppConstants.productHairFolderKey] ?? [];
+    final productHairVideos =
+        _groupedProducts[AppConstants.productHairVideoFolderKey] ?? [];
+    final productBagsImages =
+        _groupedProducts[AppConstants.productBagsFolderKey] ?? [];
+    final productBagsVideos =
+        _groupedProducts[AppConstants.productBagsVideoFolderKey] ?? [];
+    final productHairProductImages =
+        _groupedProducts[AppConstants.productHairProductsFolderKey] ?? [];
+    final productHairProductVideos =
+        _groupedProducts[AppConstants.productHairProductsVideoFolderKey] ?? [];
+    final productJewelleriesImages =
+        _groupedProducts[AppConstants.productJewelleriesFolderKey] ?? [];
+    final productJewelleriesVideos =
+        _groupedProducts[AppConstants.productJewelleriesVideoFolderKey] ?? [];
+
+    final productMedia = [
+      ...productHairImages,
+      ...productHairVideos,
+      ...productBagsImages,
+      ...productBagsVideos,
+      ...productHairProductImages,
+      ...productHairProductVideos,
+      ...productJewelleriesImages,
+      ...productJewelleriesVideos,
+    ]..shuffle();
 
     return Scaffold(
       backgroundColor: AppTheme.backgroundBlack,

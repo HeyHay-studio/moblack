@@ -51,4 +51,7 @@ class ProductRecord {
       createdAt: (data['createdAt'] as Timestamp?)?.toDate() ?? DateTime.now(),
     );
   }
+
+  String get categoryName =>
+      assetFolder.contains('/') ? assetFolder.split('/')[1] : assetFolder;
 }

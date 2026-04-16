@@ -16,12 +16,10 @@ class AppConstants {
         })
         .join("\n\n");
 
-    final sanitizedId = itemManifest.replaceAll(RegExp(r'[^\w.\-/]'), '');
-
     final message =
         "Hello Moblack! ✨\n\n"
         "I've curated a selection from your Signature Collection:\n\n"
-        "$sanitizedId\n\n"
+        "$itemManifest\n\n"
         "**Total Inquiry Value: GH₵ ${total.toStringAsFixed(2)}**\n\n"
         "Please let me know how to proceed with payment.";
 
@@ -126,8 +124,21 @@ class AppConstants {
   ];
 
   // --- PRODUCTS DATA ---
-  static const String productFolderKey = 'Products/Hairs/images';
-  static const String productVideoFolderKey = 'Products/Hairs/videos';
+  static const String productHairFolderKey = 'Products/Hairs/images';
+  static const String productHairVideoFolderKey = 'Products/Hairs/videos';
+
+  static const String productBagsFolderKey = 'Products/Bags/images';
+  static const String productBagsVideoFolderKey = 'Products/Bags/videos';
+
+  static const String productHairProductsFolderKey =
+      'Products/Hair Products/images';
+  static const String productHairProductsVideoFolderKey =
+      'Products/Hair Products/videos';
+
+  static const String productJewelleriesFolderKey =
+      'Products/Jewelleries/images';
+  static const String productJewelleriesVideoFolderKey =
+      'Products/Jewelleries/videos';
 
   // --- GALLERY SECTION ---
   static const List<String> galleryImages = [

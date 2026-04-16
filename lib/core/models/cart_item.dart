@@ -44,6 +44,22 @@ class CartManager extends ChangeNotifier {
     _items.clear();
     notifyListeners();
   }
+
+  void updateQuantity(String productId, int delta) {
+    final index = _items.indexWhere(
+      (item) => item.product.publicId == productId,
+    );
+    if (index != -1) {
+      final newQuantity = _items[index].quantity + delta;
+
+      if (newQuantity <= 0) {
+        removeFromCart(index);
+      } else {
+        _items[index].quantity = newQuantity;
+        notifyListeners();
+      }
+    }
+  }
 }
 
 final cartManager = CartManager();
