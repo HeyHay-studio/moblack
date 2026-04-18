@@ -598,10 +598,37 @@ class _ProductsPageState extends State<ProductsPage>
                 const SizedBox(height: 32),
 
                 if (_displayMedia.isEmpty && !_isInitialLoading)
-                  const Center(
-                    child: Text(
-                      'No products available.',
-                      style: TextStyle(color: Colors.white70),
+                  Center(
+                    key: const ValueKey('no_results'),
+                    child: Column(
+                      children: [
+                        const SizedBox(height: 40),
+                        Icon(
+                          CupertinoIcons.search_circle,
+                          size: 64,
+                          color: Colors.white24,
+                        ),
+                        const SizedBox(height: 16),
+                        Text(
+                          'No products found for "$_searchQuery"',
+                          style: const TextStyle(color: Colors.white70),
+                        ),
+                        SizedBox(height: 6),
+                        TextButton(
+                          onPressed: () {
+                            _searchController.clear();
+                            setState(() {
+                              _searchQuery = "";
+                              _selectedCategory = "All";
+                            });
+                            _applyFilters();
+                          },
+                          child: const Text(
+                            'Clear all filters',
+                            style: TextStyle(color: AppTheme.primaryGold),
+                          ),
+                        ),
+                      ],
                     ),
                   )
                 else
